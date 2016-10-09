@@ -23,7 +23,7 @@ class AlexNet(object):
         self.pool_stride = (2, 2)
         
         self.fc_hidden_units = 2048
-        self.output_units = 1000
+        self.output_units = 1001
         
         
         # padding: conv1的输出为55*55, stride = 4, kernel_size = 11, 需要input_size = 54 * 4 + 11 - 1 = 226, 四条边各padding 2
