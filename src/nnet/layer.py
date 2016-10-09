@@ -6,7 +6,7 @@ Created on 2016年9月27日
 '''
 import theano
 import theano.tensor as T
-import theano.tensor.signal as signal
+import theano.tensor.signal.pool as pool
 import numpy as np
 import nnet.init as init
 import util.dtype as dtype
@@ -87,7 +87,7 @@ class ConvolutionLayer(Layer):
 class MaxPooling(Layer):
     def __init__(self, input, filter_shape = (2, 2), ignore_border = True, stride = None, name = 'max_pooling'):
         Layer.__init__(self, input,  name)
-        self.output = signal.pool.pool_2d(input = self.input, ds = filter_shape, ignore_border = ignore_border, st = stride)
+        self.output = pool.pool_2d(input = self.input, ds = filter_shape, ignore_border = ignore_border, st = stride)
 
 class SoftmaxOutputLayerWithLoss(FullyConnectedLayer):
     def __init__(self, input, n_in, n_out, label, name = 'SoftmaxLayerWithLoss'):
