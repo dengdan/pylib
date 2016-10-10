@@ -94,6 +94,7 @@ class AlexNet(object):
         
         
     def get_updates(self, lr):    
+#         make sure lr has the same type with params
         lr = T.cast(lr, util.dtype.floatX)
         updates = [(p, p - lr * T.grad(self.loss, p)) for p in self.params]
 #         return T.cast(updates, util.dtype.floatX)
