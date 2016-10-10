@@ -13,4 +13,7 @@ int32 = 'int32'
 uint8 = np.uint8
 
 def cast(obj, dtype):
+    if isinstance(obj, list):
+        return np.asarray(obj, dtype = floatX)
     return np.cast[dtype](obj)
+
