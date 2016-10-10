@@ -12,14 +12,16 @@ import theano
 import alexnet.AlexNet
 import data.imagenet2012_data
 import nnet.layer
-import util.plt
 import util.statistic
+import util.io
 
 input = T.tensor4()
 label = T.ivector()
 lr = T.dscalar()
 net = alexnet.AlexNet.AlexNet(input, label)
 
+print 'building theano functions...'
+t1 = time.time()
 train_alexnet = theano.function(
                                 inputs = [input, label, lr], 
                                 outputs = [net.loss, net.accuracy], 
@@ -62,10 +64,12 @@ debug = theano.function(
                         outputs = debug_output 
                         )
 
+t2 = time.time()
+print 'building finished. %f seconds used' % (t2 - t1)
 
 print "There are %d parameters in AlexNet"%( get_param_count())
 epochs = 20
-learning_rate = 0.0001
+learning_rate = 0.00001
 training_losses = []
 training_accuracies = []
 val_losses = []
@@ -73,10 +77,13 @@ val_accuracies = []
 epoch_time = []
 dump_path = './model/'
 batch_size = 100
+
+print "creating data iterator..."
 imagenet2012_data_dir = '/home/dengdan/dataset/imagenet_2012_mxnet/'
 train_iter =  data.imagenet2012_data.get_imagenet_2012_train_data(data_path = imagenet2012_data_dir,batch_size = batch_size)
 val_iter = data.imagenet2012_data.get_imagenet_2012_val_data(data_path = imagenet2012_data_dir ,batch_size = batch_size)
 # train_iter = val_iter
+print "creating data iterator OK."
 
 util.io.mkdir(dump_path)
 
