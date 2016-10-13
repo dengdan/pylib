@@ -1,3 +1,3 @@
 git add . --all
-git commit -m 'finish SGDSolver and refactor the demos'
+git commit -m 'remove the experiments directory'
 git push -u origin master
