@@ -1,13 +1,13 @@
 #coding=utf-8
 '''
 Created on 2016年9月27日
-
 @author: dengdan
 '''
 import theano
 import theano.tensor as T
 import theano.tensor.signal.pool as pool
 import numpy as np
+
 import nnet.init as init
 import util.dtype as dtype
 from util.rand import rng, trng
@@ -61,7 +61,7 @@ class FullyConnectedLayer(Layer):
         self.output = self.activation(self.lin_output)
 
 class ConvolutionLayer(Layer):
-    def __init__(self, input, filter_shape, initializer = None, stride = (1, 1), activation = T.nnet.relu, padding = 'half', name = 'conv' ):
+    def __init__(self, input, filter_shape, stride = (1, 1), activation = T.nnet.relu, padding = 'half', name = 'conv' ):
         Layer.__init__(self, input, name)
         mu, sigma = 0, np.sqrt(2.0/np.prod(filter_shape[1:]))
         W_value = rng.normal(mu, sigma, size = filter_shape)

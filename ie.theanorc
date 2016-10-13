@@ -2,6 +2,7 @@
 floatX=float32
 device=gpu
 force_device = 1
+#mode = FAST_COMPILE
 [cuda]
 
 root=/usr/local/cuda

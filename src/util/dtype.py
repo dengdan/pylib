@@ -4,13 +4,14 @@ Created on 2016年9月27日
 
 @author: dengdan
 '''
-import theano
 import numpy as np
 
-floatX = theano.config.floatX
+float32 = 'float32'
+floatX = float32
 int32 = 'int32'
-
-uint8 = np.uint8
+uint8 = 'uint8'
+string = 'str'
+int = 'int'
 
 def cast(obj, dtype):
     if isinstance(obj, list):

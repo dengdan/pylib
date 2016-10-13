@@ -6,10 +6,11 @@ Created on 2016年10月6日
 '''
 import nnet.layer as layer
 import theano.tensor as T
-import util.dtype
-
-class AlexNet(object):
+import model.Model as Model
+class AlexNet(Model):
     def __init__(self, input, label):
+        Model.__init__(self)
+        
         self.input = input
         
         self.conv1_filter_shape = (96, 3, 11, 11)
@@ -84,21 +85,6 @@ class AlexNet(object):
         
         self.layers = [self.conv1, self.pool1,self.conv2_1, self.pool2_1,self.conv2_2, self.pool2_2, self.conv3_1, 
                        self.conv4_1, self.conv5_1, self.fc1_1, self.fc2_1, self.conv3_2, self.conv4_2, self.conv5_2, self.fc1_2, self.fc2_2 , self.output_layer]
-        self.params = []
-        for l in self.layers:
-            self.params.extend(l.params)
-        param_count = 0
-        for p in self.params:
-            param_count += T.prod(p.shape)
-        self.param_count = param_count
         
+        self.touch_params()
         
-    def get_updates(self, lr):    
-#         make sure lr has the same type with params
-        lr = T.cast(lr, util.dtype.floatX)
-        updates = [(p, p - lr * T.grad(self.loss, p)) for p in self.params]
-#         return T.cast(updates, util.dtype.floatX)
-        return updates
-        
-        
-    
