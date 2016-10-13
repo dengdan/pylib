@@ -1,3 +1,3 @@
 git add . --all
-git commit -m 'remove the experiments directory'
+git commit -m 'fix setup.py'
 git push -u origin master
