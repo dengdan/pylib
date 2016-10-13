@@ -1,3 +1,3 @@
 git add . --all
-git commit -m 'commit as a backup, because I wanna add solver class now.'
+git commit -m 'finish SGDSolver and refactor the demos'
 git push -u origin master

@@ -36,3 +36,4 @@ def get_imagenet_2012_val_data(batch_size = 100, data_path = imagenet2012_data_d
         batch_size  = batch_size)
     return val
 
+

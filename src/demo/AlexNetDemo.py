@@ -1,15 +1,17 @@
 #coding=utf-8
+'''
+Created on 2016-10-7
+@author: dengdan
+'''
 from common_import import *
-from model import LeNet
+from model import AlexNet
+util.log.init_logger('~/temp/alexnet.log');
 
-util.log.init_logger('~/temp/lenet.log');
-
-# 创建Iter的时间越早越好.
 batch_size = 100
 image_shape = (224, 224)
 train_iter, val_iter = get_iter(image_shape = image_shape, batch_size = batch_size, prefetch = 5, num_threads = 8)
 
-net = LeNet()
+net = AlexNet('AlexNet2')
 solver = SGDSolver(
         train_iter = train_iter, 
         batch_size = 100, 
@@ -18,3 +20,4 @@ solver = SGDSolver(
         val_iter = val_iter,
         dump_path = '~/temp')
 solver.fit(net)
+
