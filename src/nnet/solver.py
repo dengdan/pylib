@@ -14,7 +14,7 @@ class Solver(object):
         train_iter, 
         epochs = None,
         total_iterations = None,
-        learning_rate = 0.0001,
+        learning_rate = 0.01,
         val_iter = None,
         val_interval = 1000,
         dump_interval = 5000,
