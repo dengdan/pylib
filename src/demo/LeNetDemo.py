@@ -13,7 +13,6 @@ train_iter, val_iter = get_iter(image_shape = image_shape, batch_size = batch_si
 
 net = LeNet()
 solver = SimpleGradientDescentSolver(
-        batch_size = 100, 
         #epochs = 0.01,
         total_iterations = 20000,
         learning_rate = 0.01,

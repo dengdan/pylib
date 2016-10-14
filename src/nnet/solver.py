@@ -10,11 +10,10 @@ import util.io
 import util.dtype as dtype
 class Solver(object):
     def __init__(self, 
-        batch_size, 
         train_iter, 
         epochs = None,
         total_iterations = None,
-        learning_rate = 0.01,
+        learning_rate = None,
         val_iter = None,
         val_interval = 1000,
         dump_interval = 5000,
@@ -22,7 +21,6 @@ class Solver(object):
         ):
         self.train_iter = train_iter
         self.val_iter = val_iter
-        self.batch_size = batch_size
         self.epochs = epochs        
         self.total_iterations = total_iterations
         self.learning_rate = dtype.cast(learning_rate, dtype.floatX)
@@ -50,7 +48,6 @@ class SimpleGradientDescentSolver(Solver):
     """The most simple gradient descent model, with learning rate fixed after chosen."""
     def __init__(self, 
         train_iter, 
-        batch_size, 
         epochs = None,
         total_iterations = None,
         learning_rate = 0.0001,
@@ -62,8 +59,8 @@ class SimpleGradientDescentSolver(Solver):
 
         Solver.__init__(self,
             train_iter = train_iter, 
-            batch_size = batch_size, 
             epochs = epochs,
+            learning_rate = learning_rate,
             total_iterations = total_iterations,
             val_interval = val_interval,
             dump_interval = dump_interval,
@@ -111,7 +108,6 @@ class SimpleGradientDescentSolver(Solver):
         val_losses = []
         val_accuracies = []
         dump_path = self.dump_path
-        batch_size = self.batch_size
         
         self.iterations = 0
         t1 = time.time()
@@ -197,12 +193,11 @@ class MomentumGradientDescentSolver(SimpleGradientDescentSolver):
     """ gradient descent with momentum and decay"""
     def __init__(self, 
         train_iter, 
-        batch_size, 
         momentum = 0.9,
         decay = 0.0,
         epochs = None,
         total_iterations = None,
-        learning_rate = 0.0001,
+        learning_rate = 0.01,
         val_iter = None,
         val_interval = 1000,
         dump_interval = 5000,
@@ -212,8 +207,8 @@ class MomentumGradientDescentSolver(SimpleGradientDescentSolver):
         SimpleGradientDescentSolver.__init__(self,
             train_iter = train_iter, 
             val_iter = val_iter,
-            batch_size = batch_size, 
             epochs = epochs,
+            learning_rate = learning_rate,
             total_iterations = total_iterations,
             val_interval = val_interval,
             dump_interval = dump_interval,
