@@ -18,6 +18,4 @@ import util.io
 import util.log
 import logging
 
-from nnet.solver import SGDSolver
-
 from imagenet2012_iter import get_iter

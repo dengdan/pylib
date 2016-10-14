@@ -15,9 +15,9 @@ class Model(object):
     def __init__(self, name):
         self.params = []
         self.layers = []
+        self.params_to_be_updated = []
         self.input = T.tensor4()
         self.label = T.ivector()
-        self.lr = T.cast(T.dscalar(), util.dtype.floatX)
         self.name = name        
         
     def touch_params(self):
@@ -26,33 +26,13 @@ class Model(object):
         if len(self.params) == 0:
             for l in self.layers:
                 self.params.extend(l.params)
+        if len(self.params_to_be_updated) == 0:
+            self.params_to_be_updated = self.params
         param_count = 0
-        for p in self.params:
+        for p in self.params_to_be_updated:
             param_count += T.prod(p.shape)
         self.param_count = param_count
-    
-    def get_updates(self): 
-        updates = [(p, p - self.lr * T.grad(self.loss, p)) for p in self.params]
-        return updates        
         
-        
-    def get_training_fn(self):
-        """
-        the returned training function accepts three parameters:
-            input: 4-D training data batch, with shape = (batch_size, channels, height, width)
-            label: a vector of integers as the label
-            lr: learning rate
-        """
-        t1 = time.time()
-        logging.info('building the training function of %s...' %(self.name))
-        train = theano.function(
-                inputs = [self.input, self.label, self.lr], 
-                outputs = [self.loss, self.accuracy], 
-                updates = self.get_updates()
-        )
-        t2 = time.time()
-        logging.info("building finished, using %d seconds."%(t2 - t1))
-        return train
         
     def get_val_fn(self):
         t1 = time.time()

@@ -14,6 +14,8 @@ def init_logger(log_path = './log.log', log_level = logging.DEBUG, mode = 'w', d
     do_print: 是否打印到控制台
     mode: 'a', append; 'w', 覆盖原文件写入.
     """
+    print('log file path:' + log_path);
+    util.io.make_parent_dir(log_path)
     fmt = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s: %(message)s'
     logging.basicConfig(level = log_level,
                 format= fmt,

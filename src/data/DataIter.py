@@ -74,14 +74,13 @@ class Batch(object):
     
 class ImageDataIter(object):
      
-    def __init__(self, root_dir = "", lst_path = "", image_shape = (224, 224), batch_size = 100, random_shuffle = True, center_cropped = True, prefetch = 5, num_threads = 5):
+    def __init__(self, root_dir = "", lst_path = "", image_shape = (224, 224), batch_size = 100, random_shuffle = True, center_cropped = True, prefetch = 5, num_threads = 5, auto_stop = False):
         self.lst_path = util.io.get_absolute_path(lst_path) # 主要是为了处理~
         self.root_dir = util.io.get_absolute_path(root_dir)
         self.image_shape = image_shape
         self.random_shuffle = random_shuffle
         self.center_cropped = center_cropped
-        self.batch_count = 1
-        
+        self.auto_stop = False
         
         logging.debug('reading lst file:' + self.lst_path)
         lst_file = open(self.lst_path, 'r')
@@ -89,7 +88,9 @@ class ImageDataIter(object):
         self.record_count = len(lines)
         self.batch_size = batch_size
         self.batch_per_epoch = np.ceil(self.record_count * 1.0 / self.batch_size) 
+        self.batch_count = 0
         self.record_lst = [[]]*self.record_count
+        
         
         logging.debug('parsing lst file...')
         for idx, line in enumerate(lines):
@@ -162,12 +163,11 @@ class ImageDataIter(object):
         return self
     
     def next(self):
-        if self.batch_count > self.batch_per_epoch:
-            raise StopIteration 
+        if self.auto_stop and self.batch_count >= self.batch_per_epoch:
+            raise  StopIteration
         batch = self.batch_buffer.get()
         self.batch_count += 1
         return batch
     
     def reset(self):
-        self.batch_count = 0
-        
+        self.batch_count  = 0
