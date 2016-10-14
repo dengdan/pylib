@@ -15,14 +15,14 @@ batch_size = 100
 image_shape = (224, 224)
 train_iter, val_iter = get_iter(image_shape = image_shape, batch_size = batch_size, prefetch = 5, num_threads = 8)
 
-net = AlexNet('AlexNet2')
+net = AlexNet('AlexNet')
 solver = MomentumGradientDescentSolver(
         batch_size = 100, 
         epochs = 50,
         momentum = 0.9,
         decay = 0.0005,
         #total_iterations = 2000,
-        learning_rate = 0.0001,
+        learning_rate = 0.01,
         dump_path = dump_path,
         dump_interval = 5000,
         val_interval = 5000, 
