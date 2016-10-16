@@ -1,4 +1,5 @@
 #encoding = utf-8
+
 import logging
 import time
 
@@ -23,26 +24,153 @@ class Solver(object):
         self.val_iter = val_iter
         self.epochs = epochs        
         self.total_iterations = total_iterations
-        self.learning_rate = dtype.cast(learning_rate, dtype.floatX)
         self.dump_path = dump_path;
         self.dump_interval = dump_interval
         self.val_interval = val_interval
+        self.learning_rate = learning_rate
+        # the name patterns of dump files
+        self.model_dump_name_pattern ='%s_Iteration_%d.model'
+        self.sover_dump_name_pattern = '%s_Iteration_%d.solver.data'
         
+        self.training_losses = []
+        self.training_accuracies = []
+        self.val_losses = []
+        self.val_accuracies = []
         
-        # if total_iterations is set, use it. or calculate it through epochs
-        if self.epochs != None and self.total_iterations == None:
-            self.total_iterations = self.epochs * self.train_iter.batch_per_epoch
-            
-        if self.total_iterations == None:
-            raise ValueError('Either epochs or total_iterations must be provided. If both are provided, total_iterations has a higher priority.')
-    
-    def fit(self, model):
-        pass
     
     def get_updates(self, model):
         pass
         
-    
+        
+    def fit(self, model,last_stop_iteration = None):
+        if last_stop_iteration != None:
+            self.iterations = last_stop_iteration + 1
+        else:
+            self.iterations = 0
+        logging.info('start from iteration %d'%(self.iterations))
+        
+        # in case where the solver is loaded from a dump, where the __init__() won't be executed
+        self.learning_rate = dtype.cast(self.learning_rate, dtype.floatX)
+        
+        if self.epochs != None:
+            self.total_iterations = self.epochs * self.train_iter.batch_per_epoch
+        if self.total_iterations == None:
+            raise ValueError('Either epochs or total_iterations must be provided. If both are provided, total_iterations has a higher priority.')
+        
+        training_start = time.time()
+        train_iter = self.train_iter
+        val_iter = self.val_iter
+        logging.info( 'building theano functions...')
+        logging.info('building the training function of %s...' %(model.name))
+        t1 = time.time()
+        training_fn = theano.function(
+                inputs = [model.input, model.label], 
+                outputs = [model.loss, model.accuracy], 
+                updates = self.get_updates(model)
+        )
+        t2 = time.time()
+        logging.info("building finished, using %d seconds."%(t2 - t1))        
+        
+        
+        t1 = time.time() 
+        
+        if val_iter != None:       
+            val_fn = model.get_val_fn()
+            
+        get_param_count_fn = model.get_param_count_fn()
+        t2 = time.time()
+        
+        logging.info('All functions are built.')
+
+        logging.info("There are %d parameters in %s"%( get_param_count_fn(), model.name))
+
+        training_losses = []
+        training_accuracies = []
+        val_losses = []
+        val_accuracies = []
+        dump_path = self.dump_path
+        
+        t1 = time.time()
+        for batch in self.train_iter:
+            
+            # training          
+            data_X = batch.get_data()
+            data_y = batch.get_label()
+            t2 = time.time()
+            io_time = t2 - t1
+            training_loss, training_accuracy = training_fn(data_X, data_y)
+            t1 = time.time()
+            training_time = t1 - t2
+            training_losses.append(training_loss)
+            training_accuracies.append(training_accuracy)
+            
+            epoch = self.iterations // self.train_iter.batch_per_epoch
+            iteration = self.iterations % self.train_iter.batch_per_epoch
+            logging.info("Total Iteration %d (Epoch %d, Iteration %d): loss = %f, accuracy = %f, learning_rate = %f, training time = %f seconds, io time = %f seconds"% (self.iterations, epoch, iteration, training_loss, training_accuracy, self.learning_rate, training_time, io_time))
+            
+            # validation
+            if self.val_iter != None and (self.iterations + 1) % self.val_interval == 0:
+                val_loss = []
+                val_accuracy = []
+                logging.info( 'validating model...')
+                val_iter.reset()
+                val_iter.auto_stop = True
+                val_iter.batch_per_epoch = 3 
+                for batch in val_iter:
+                    data_X = batch.data
+                    data_y = batch.label
+                    val_loss_batch, val_accuracy_batch = val_fn(data_X, data_y)
+                    val_loss.append(val_loss_batch)
+                    val_accuracy.append(val_accuracy_batch)
+                    logging.info('Validating val batch %d'%(val_iter.batch_count))
+                val_losses.append(np.mean(val_loss))
+                val_accuracies.append(np.mean(val_accuracy))
+                logging.info("Total Iteration %d (Epoch %d, Iteration %d), validation result: loss = %f, accuracy = %f"%(self.iterations, epoch, iteration, val_losses[-1], val_accuracies[-1]))
+
+            # dump data and model
+            if (self.iterations + 1) % self.dump_interval == 0:
+                self.training_losses.extend(training_losses)
+                self.training_accuracies.extend(training_accuracies)
+                self.val_losses.extend(val_losses)
+                self.val_accuracies.extend(val_accuracies)
+                
+                # the two iterators and the update_value won't be dumped
+                self.train_iter = None
+                self.val_iter = None
+                update_value = self.update_value 
+                self.update_value = None
+                             
+                dump_model = self.model_dump_name_pattern%(model.name,self.iterations)
+                dump_solver = self.sover_dump_name_pattern%(model.name,self.iterations)
+                t2 = time.time()
+                logging.info( 'dumping model and solver data...')
+                util.io.dump(util.io.join_path(dump_path, dump_model), model)
+                util.io.dump(util.io.join_path(dump_path, dump_solver), self)
+                t1 = time.time()
+                logging.info( 'dumping finished, time used = %f seconds...'%(t1 - t2))
+                
+                # restore
+                self.train_iter = train_iter
+                self.val_iter = val_iter
+                self.update_value = update_value
+                
+                
+            self.iterations += 1
+            # stop training if iterations are over.
+            if self.iterations >= self.total_iterations:
+                training_end = time.time()
+                training_time = (training_end - training_start)/60
+                time_unit = 'minites'
+                
+                if training_time >= 60:
+                    training_time = training_time / 60.0
+                    time_unit = 'hours'
+                
+                if training_time >= 24:
+                    training_time = training_time / 24.0
+                    time_unit = 'days' 
+                logging.info('training finished, taking %f %s'%(training_time, time_unit));                
+                break
         
 class SimpleGradientDescentSolver(Solver):
     """The most simple gradient descent model, with learning rate fixed after chosen."""
@@ -72,122 +200,6 @@ class SimpleGradientDescentSolver(Solver):
         params = model.params_to_be_updated
         updates = [(p, p - self.learning_rate * T.grad(model.loss, p)) for p in params]
         return updates 
-        
-        
-    def fit(self, model):
-        training_start = time.time()
-        train_iter = self.train_iter
-        val_iter = self.val_iter
-        logging.info( 'building theano functions...')
-        logging.info('building the training function of %s...' %(model.name))
-        t1 = time.time()
-        training_fn = theano.function(
-                inputs = [model.input, model.label], 
-                outputs = [model.loss, model.accuracy], 
-                updates = self.get_updates(model)
-        )
-        t2 = time.time()
-        logging.info("building finished, using %d seconds."%(t2 - t1))        
-        
-        
-        t1 = time.time() 
-        
-        if val_iter != None:       
-            val_fn = model.get_val_fn()
-            
-        get_param_count_fn = model.get_param_count_fn()
-        t2 = time.time()
-        
-        logging.info('All functions are built.')
-
-        logging.info("There are %d parameters in %s"%( get_param_count_fn(), model.name))
-
-
-        training_losses = []
-        training_accuracies = []
-        val_losses = []
-        val_accuracies = []
-        dump_path = self.dump_path
-        
-        self.iterations = 0
-        t1 = time.time()
-        for batch in self.train_iter:
-            
-            # training          
-            data_X = batch.get_data()
-            data_y = batch.get_label()
-            t2 = time.time()
-            io_time = t2 - t1
-            training_loss, training_accuracy = training_fn(data_X, data_y)
-            t1 = time.time()
-            training_time = t1 - t2
-            training_losses.append(training_loss)
-            training_accuracies.append(training_accuracy)
-            
-            epoch = self.iterations // self.train_iter.batch_per_epoch
-            iteration = self.iterations % self.train_iter.batch_per_epoch
-            logging.info("Total Iteration %d (Epoch %d, Iteration %d): loss = %f, accuracy = %f, training time = %f seconds, io time = %f seconds"% (self.iterations, epoch, iteration, training_loss, training_accuracy, training_time, io_time))
-            
-            # validation
-            if self.val_iter != None and (self.iterations + 1) % self.val_interval == 0:
-                val_loss = []
-                val_accuracy = []
-                logging.info( 'validating model...')
-                val_iter.reset()
-                val_iter.auto_stop = True
-                val_iter.batch_per_epoch = 3 
-                for batch in val_iter:
-                    data_X = batch.data
-                    data_y = batch.label
-                    val_loss_batch, val_accuracy_batch = val_fn(data_X, data_y)
-                    val_loss.append(val_loss_batch)
-                    val_accuracy.append(val_accuracy_batch)
-                    logging.info('Validating val batch %d'%(val_iter.batch_count))
-                val_losses.append(np.mean(val_loss))
-                val_accuracies.append(np.mean(val_accuracy))
-                logging.info("Total Iteration %d (Epoch %d, Iteration %d), validation result: loss = %f, accuracy = %f"%(self.iterations, epoch, iteration, val_losses[-1], val_accuracies[-1]))
-
-            # dump data and model
-            if (self.iterations + 1) % self.dump_interval == 0:
-                self.training_losses = training_losses
-                self.training_accuracies = training_accuracies
-                self.val_losses = val_losses
-                self.val_accuracies = val_accuracies  
-                
-                # the two iterator won't be dumped
-                self.train_iter = None
-                self.val_iter = None              
-                dump_model = '%s_Iteration_%d.model'%(model.name,self.iterations)
-                dump_solver = '%s_Iteration_%d.solver.data'%(model.name,self.iterations)
-                t2 = time.time()
-                logging.info( 'dumping model and solver data...')
-                util.io.dump(util.io.join_path(dump_path, dump_model), model)
-                util.io.dump(util.io.join_path(dump_path, dump_solver), self)
-                t1 = time.time()
-                logging.info( 'dumping finished, time used = %f seconds...'%(t1 - t2))
-                
-                # restore the two iterators
-                self.train_iter = train_iter
-                self.val_iter = val_iter
-                        
-            self.iterations += 1
-            # stop training if iterations are over.
-            if self.iterations >= self.total_iterations:
-                training_end = time.time()
-                training_time = (training_end - training_start)/60
-                time_unit = 'minites'
-                
-                if training_time >= 60:
-                    training_time = training_time / 60.0
-                    time_unit = 'hours'
-                
-                if training_time >= 24:
-                    training_time = training_time / 24.0
-                    time_unit = 'days' 
-                logging.info('training finished, taking %f %s'%(training_time, time_unit));                
-                break
-                        
-
 
 class MomentumGradientDescentSolver(SimpleGradientDescentSolver):
     """ gradient descent with momentum and decay"""

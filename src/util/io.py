@@ -36,7 +36,13 @@ def dump(path, obj):
     with open(path, 'w') as f:
         logging.info('dumping file:' + path);
         pkl.dump(obj, f)
-        
+
+def load(path):
+    path = get_absolute_path(path)
+    with open(path, 'r') as f:
+        data = pkl.load(f)
+    return data
+
 def join_path(a, *p):
     return os.path.join(a, *p)
 

@@ -16,7 +16,6 @@ t_buffer_producer 读取record_data, 生成batch
     while True:
         read record data from record_data queue
         produce batch 
-        copy it to gpu
         add it to batch buffer
 2. 读到最后一个batch数量不足的行为: 从record_lst 开头取
 '''
@@ -44,6 +43,7 @@ class ImageRecord(object):
         image = cv2.imread(self.image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         self.image_data = cv2.resize(image, shape)
+        
         
 class Batch(object):
     def __init__(self, records, gpu = True):
@@ -148,7 +148,7 @@ class ImageDataIter(object):
         self.record_pointer_lock.wait()
         records = [0]*num_records 
         for i in range(num_records):
-            if self.record_pointer > self.record_count:
+            if self.record_pointer >= self.record_count:
                 if self.random_shuffle:
                     random.shuffle(self.record_lst)
                     self.record_pointer = 0

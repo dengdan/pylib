@@ -1,3 +1,3 @@
 git add . --all
-git commit -m 'finish momentum solver'
+git commit -m 'add and test restart training from dump data.'
 git push -u origin master

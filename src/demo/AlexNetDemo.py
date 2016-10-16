@@ -17,15 +17,15 @@ train_iter, val_iter = get_iter(image_shape = image_shape, batch_size = batch_si
 
 net = AlexNet('AlexNet')
 solver = MomentumGradientDescentSolver(
-        epochs = 50,
+        #epochs = 50,
         momentum = 0.9,
         decay = 0.0005,
-        #total_iterations = 2000,
+        total_iterations = 20,
         learning_rate = 0.0001,
         dump_path = dump_path,
-        dump_interval = 5000,
+        dump_interval = 15,
         val_interval = 5000, 
-        train_iter = train_iter, 
+        train_iter = train_iter,
         val_iter = val_iter
         )
 solver.fit(net)
