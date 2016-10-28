@@ -1,6 +1,6 @@
 #coding=utf-8
 '''
-Created on 2016年9月27日
+Created on 2016-9-27
 
 @author: dengdan
 '''
