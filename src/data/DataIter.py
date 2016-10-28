@@ -30,6 +30,7 @@ import copy
 from util import dtype 
 import logging
 
+
 class ImageRecord(object):
     
     def __init__(self, image_path, image_label, image_id):

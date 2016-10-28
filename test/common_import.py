@@ -11,14 +11,14 @@ except ImportError:
 import time
 
 import numpy as np
-import theano.tensor as T
-import theano
 
 import util.io
 import util.log
+import numpy as np
+
+import util.dec
+import util.rand
+import util.statistic
 import logging
+util.log.init_logger(log_file = None)
 
-from imagenet2012_iter import get_iter
-
-from util.rand import rng
-from util.t import trng

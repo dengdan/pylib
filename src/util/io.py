@@ -12,6 +12,8 @@ import cPickle as pkl
 import commands
 import logging
 
+import util.str
+
 def mkdir(path):
     """
     If the target directory does not exists, it and its parent directories will created. 
@@ -62,10 +64,24 @@ def cd(p):
     p = get_absolute_path(p)
     os.chdir(p)
     
-def ls(path = '.'):
+def ls(path = '.', suffix = None):
+    """
+    list files in a directory.
+    return file names in a list
+    """
     path = get_absolute_path(path)
-    return os.listdir(path)
+    files = os.listdir(path)
 
+    if suffix is None:       
+        return files
+        
+    filtered = []
+    for f in files:
+        if util.str.endswith(f, suffix, ignore_case = True):
+            filtered.append(f)
+    
+    return filtered
+    
 def cat(p):
     cmd = 'cat ' + p
     return commands.getoutput(cmd)

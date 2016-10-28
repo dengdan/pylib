@@ -34,17 +34,6 @@ class Model(object):
         self.param_count = param_count
         
         
-    def get_val_fn(self):
-        t1 = time.time()
-        logging.info('building the val function of %s...' %(self.name))
-        val = theano.function(
-                                        inputs = [self.input, self.label], 
-                                        outputs = [self.loss, self.accuracy]
-        )
-        t2 = time.time()
-        logging.info("building finished, using %d seconds."%(t2 - t1))
-        return val
-    
     def get_param_count_fn(self):
         get_param_count = theano.function(
                                           inputs = [],

@@ -6,21 +6,79 @@ Created on 2016年9月29日
 '''
 import cv2
 import numpy as np
+
+import util.io
+
 IMREAD_GRAY = 0
 IMREAD_COLOR = 1
 IMREAD_UNCHANGED = -1
 
-COLOR_WHITE = (255, 255, 255)
+COLOR_WHITE =(255, 255, 255)
 COLOR_BLACK = (0, 0, 0)
 COLOR_BGR_YELLOW = (0, 255, 255)
-def imshow(winname, img, mode = IMREAD_UNCHANGED, block = True):
+COLOR_BGR_RED = (0, 0, 255)
+
+def waitkey(target = None):
+    key = cv2.waitKey()& 0xFF
+    if target == None:
+        return key
+    if type(target) == str:
+        target = ord(target)
+    while key != target:
+        key = cv2.waitKey()& 0xFF
+    
+
+def imshow(winname, img, mode = IMREAD_UNCHANGED, block = False, position = None):
     if not isinstance(img, np.ndarray):
         img = cv2.imread(img, mode)
         
+    cv2.namedWindow(winname, cv2.WINDOW_NORMAL)
     cv2.imshow(winname, img)
+    if position is not None:
+        cv2.moveWindow(winname, position[0], position[1])
+        
     if block:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
     
 def black(shape):
     return np.zeros(shape, np.uint8)
+    
+    
+def imread(path):
+    path = util.io.get_absolute_path(path)
+    img = cv2.imread(path, IMREAD_UNCHANGED)
+    #img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    return img
+    
+
+def ds_size(image_size, kernel_size, stride):
+    """calculate the size of downsampling result"""
+    image_x, image_y = image_size
+    kernel_x, kernel_y = kernel_size
+    stride_x, stride_y = stride
+    
+    def f(iw, kw, sw):
+        return int(np.floor((iw - kw) / sw) + 1)
+    
+    output_size = (f(image_x, kernel_x, stride_x), f(image_y, kernel_y, stride_y))
+    return output_size
+
+def move_win(winname, position = (0, 0)):
+    cv2.moveWindow(winname, position[0], position[1])
+    
+def get_roi(img, p1, p2):
+    """
+    extract region of interest from an image.
+    p1, p2: two tuples standing for two opposite corners of the rectangle bounding the roi. 
+    Their order is arbitrary.
+    """
+    x1, y1 = p1
+    x2, y2 = p2
+    
+    x_min = min([x1, x2])
+    y_min = min([y1, y2])
+    x_max = max([x1, x2]) + 1
+    y_max = max([y1, y2]) + 1
+    
+    return img[y_min: y_max, x_min: x_max]

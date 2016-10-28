@@ -5,13 +5,12 @@ Created on 2016年10月8日
 @author: dengdan
 '''
 import numpy as np
+import util.np
 
 def D(x):
-    if(len(x.shape) > 0):
-        x = np.resize(x, np.prod(x.shape))
+    x = util.np.flatten(x)
     return np.var(x)
 
 def E(x):
-    if(len(x.shape) > 0):
-        x = np.resize(x, np.prod(x.shape))
+    x = util.np.flatten(x)
     return np.average(x)
