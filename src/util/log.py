@@ -17,14 +17,15 @@ def init_logger(log_file = None, log_level = logging.DEBUG, mode = 'w'):
     """
     fmt = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s: %(message)s'
     
-    if log_file is not None:
-        # 此处不能使用logging输出
-        print('log file path:' + log_file);
-        util.io.make_parent_dir(log_file)
-        logging.basicConfig(level = log_level,
-                    format= fmt,
-                    filename= util.io.get_absolute_path(log_file),
-                    filemode=mode)
+    if log_file is None:
+        log_file = '~/temp/log.log'
+    # 此处不能使用logging输出
+    print('log file path:' + log_file);
+    util.io.make_parent_dir(log_file)
+    logging.basicConfig(level = log_level,
+                format= fmt,
+                filename= util.io.get_absolute_path(log_file),
+                filemode=mode)
         
     console = logging.StreamHandler(stream = sys.stdout)
     console.setLevel(log_level)

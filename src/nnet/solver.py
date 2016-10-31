@@ -188,8 +188,12 @@ class Solver(object):
                 break
                 
         training_end = time.time()
-        training_time = (training_end - training_start)/60.0
-        time_unit = 'minites'
+        training_time = training_end - training_start
+        logging.debug(training_start)
+        logging.debug(training_end)
+        
+        training_time = training_time / 60.0
+        time_unit = 'minutes'
         
         if training_time >= 60:
             training_time = training_time / 60.0

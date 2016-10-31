@@ -2,6 +2,24 @@ import numpy as np
 import copy
 
 concat = np.concatenate
+
+def norm1(v):
+    return np.sqrt(norm2(v))
+
+length = norm1
+
+def norm2(v):
+    return np.sum(v ** 2)
+
+def cos_dist(v1, v2):
+    length1 = length(v1)
+    length2 = length(v2)
+    return np.dot(v1, v2) / (length1 * length2)
+
+def eu_dist(v1, v2):
+    v = v1 - v2
+    return length(v)
+
 def flatten(arr, ndim = 1):
     """
     flatten an multi-dimensional array to a certain degree.

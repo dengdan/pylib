@@ -5,32 +5,27 @@ Created on 2016年9月29日
 @author: dengdan
 '''
 import cv2
+import matplotlib.patches as patches
 import numpy as np
-
 import util.io
 
 IMREAD_GRAY = 0
 IMREAD_COLOR = 1
 IMREAD_UNCHANGED = -1
 
+
+
 COLOR_WHITE =(255, 255, 255)
 COLOR_BLACK = (0, 0, 0)
+
+COLOR_RGB_RED = (255, 0, 0)
+
 COLOR_BGR_YELLOW = (0, 255, 255)
 COLOR_BGR_RED = (0, 0, 255)
 
-def waitkey(target = None):
-    key = cv2.waitKey()& 0xFF
-    if target == None:
-        return key
-    if type(target) == str:
-        target = ord(target)
-    while key != target:
-        key = cv2.waitKey()& 0xFF
-    
-
 def imshow(winname, img, mode = IMREAD_UNCHANGED, block = False, position = None):
     if not isinstance(img, np.ndarray):
-        img = cv2.imread(img, mode)
+        img = imread(path = img, mode = mode)
         
     cv2.namedWindow(winname, cv2.WINDOW_NORMAL)
     cv2.imshow(winname, img)
@@ -45,10 +40,13 @@ def black(shape):
     return np.zeros(shape, np.uint8)
     
     
-def imread(path):
+def imread(path, rgb = False, mode = IMREAD_UNCHANGED):
     path = util.io.get_absolute_path(path)
     img = cv2.imread(path, IMREAD_UNCHANGED)
-    #img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    if img is None:
+        raise IOError('File not found:%s'%(path))
+    if rgb:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     return img
     
 
@@ -82,3 +80,21 @@ def get_roi(img, p1, p2):
     y_max = max([y1, y2]) + 1
     
     return img[y_min: y_max, x_min: x_max]
+    
+def rectangle(xy, width, height, color = 'red', linewidth = 1, fill = False, alpha = None,picker = None, ax = None, contains = None):
+    rect = patches.Rectangle(
+        xy = xy,
+        width = width,
+        height = height,
+        contains = contains,
+        alpha = alpha,
+        color = color,
+        fill = fill,
+        picker = picker,
+        linewidth = linewidth
+    )
+    if ax is not None:
+        ax.add_patch(rect)
+    return rect
+    
+rect = rectangle

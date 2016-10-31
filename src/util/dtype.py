@@ -11,10 +11,11 @@ floatX = float32
 int32 = 'int32'
 uint8 = 'uint8'
 string = 'str'
-int = 'int'
 
 def cast(obj, dtype):
     if isinstance(obj, list):
         return np.asarray(obj, dtype = floatX)
     return np.cast[dtype](obj)
 
+def int(obj):
+    return cast(obj, 'int')
