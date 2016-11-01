@@ -81,7 +81,7 @@ def get_roi(img, p1, p2):
     
     return img[y_min: y_max, x_min: x_max]
     
-def rectangle(xy, width, height, color = 'red', linewidth = 1, fill = False, alpha = None,picker = None, ax = None, contains = None):
+def rectangle(xy, width, height, color = 'red', linewidth = 1, fill = False, alpha = None,picker = None, axes = None, contains = None):
     rect = patches.Rectangle(
         xy = xy,
         width = width,
@@ -93,8 +93,25 @@ def rectangle(xy, width, height, color = 'red', linewidth = 1, fill = False, alp
         picker = picker,
         linewidth = linewidth
     )
-    if ax is not None:
-        ax.add_patch(rect)
+    if axes is not None:
+        axes.add_patch(rect)
     return rect
     
 rect = rectangle
+
+def line(xy_start, xy_end, color = 'red', linewidth = 1, alpha = None, axes = None):
+    from matplotlib.lines import Line2D 
+    num = 100
+    xdata = np.linspace(xy_start[0], xy_end[0], num = num)
+    ydata = np.linspace(xy_start[1], xy_end[1], num = num)
+    line = Line2D(
+        alpha = alpha,
+        color = color,
+        linewidth = linewidth,
+        xdata = xdata,
+        ydata = ydata
+    )
+    if axes is not None:
+        axes.add_line(line)
+    return line
+
