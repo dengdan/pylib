@@ -66,7 +66,7 @@ def detect(image, threshold_delta = 2, max_area_variation = 0.25, region_area_ra
         loc = row * cols + col
         idx[loc] = flag
         
-    def set_root(pos):
+    def union_in_mask(pos):
         set_flag(pos, pos)
         
     def union(r1, r2):
@@ -145,7 +145,7 @@ def detect(image, threshold_delta = 2, max_area_variation = 0.25, region_area_ra
         while len(points) > 0 and points[0].value <= threshold:
             point = points.pop(0)
             neighbours = find_neighbours(point.pos)
-            set_root(point.pos)
+            union_in_mask(point.pos)
             for neighbour in neighbours:
                 union(point.pos, neighbour)
         

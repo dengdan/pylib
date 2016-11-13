@@ -81,8 +81,15 @@ def ls(path = '.', suffix = None):
             filtered.append(f)
     
     return filtered
-    
+
+def readlines(p):
+    """return the text in a file in lines as a list """
+    p = get_absolute_path(p)
+    f = open(p,'r')
+    return f.readlines()
+
 def cat(p):
+    """return the text in a file as a whole"""
     cmd = 'cat ' + p
     return commands.getoutput(cmd)
 

@@ -6,8 +6,6 @@ concat = np.concatenate
 def norm1(v):
     return np.sqrt(norm2(v))
 
-length = norm1
-
 def norm2(v):
     return np.sum(v ** 2)
 
@@ -18,7 +16,15 @@ def cos_dist(v1, v2):
 
 def eu_dist(v1, v2):
     v = v1 - v2
-    return length(v)
+    return norm1(v)
+
+def chi_squared_dist(f1, f2):
+    dist = 0
+    for ff1, ff2 in zip(f1, f2):
+        if ff1 + ff2 == 0:# color feature values are supposed to be non-negative. If this case happened, it means both ne and de are 0s 
+            continue;
+        dist += (ff1 - ff2) ** 2 * 1.0/ (ff1 + ff2) 
+    return np.sqrt(dist)
 
 def flatten(arr, ndim = 1):
     """
@@ -85,6 +91,7 @@ def sum_all(m):
     sum up all the elements in a multi-dimension array
     """
     return sum(flatten(m))
+    
     
 def clone(obj, deep = False):
     if not deep:
