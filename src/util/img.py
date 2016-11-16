@@ -87,8 +87,9 @@ def imread(path, rgb = False, mode = IMREAD_UNCHANGED):
         img = bgr_to_rgb(img)
     return img
     
-def bgr_to_rgb(img):
+def bgr2rgb(img):
     return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+bgr_to_rgb = bgr2rgb
 
 def ds_size(image_size, kernel_size, stride):
     """calculate the size of downsampling result"""
