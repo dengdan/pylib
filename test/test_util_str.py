@@ -22,6 +22,22 @@ def test_is_str():
     np.testing.assert_(not is_str([]))
     np.testing.assert_(not is_str(0))
 
-test_to_lowercase()
-test_endswith()
-test_is_str()
+@util.dec.print_test
+def test_contains():
+    s = 'This is China'
+    target = 'this'
+    np.testing.assert_(not contains(s, target, ignore_case = False))
+    np.testing.assert_(contains(s, target, ignore_case = True))
+
+
+def test_replace_all():
+    s = 'a  \t b\t  c'
+    r = replace_all(s, ' ', '')
+    r = replace_all(r, '\t', '')    
+    np.testing.assert_equal(r, 'abc')
+
+#test_to_lowercase()
+#test_endswith()
+#test_is_str()
+#test_contains()
+test_replace_all()

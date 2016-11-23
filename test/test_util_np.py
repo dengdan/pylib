@@ -43,7 +43,6 @@ def test_arcsin():
 
 
 @util.dec.print_test
-@util.dec.print_calling
 def test_sin():
     # when angles are provided
     angles = util.rand.rand(3, 5)
@@ -65,20 +64,23 @@ def test_sin():
     assert util.np.sin(ys = 0, lengths = 1) == 0
     np.testing.assert_almost_equal(util.np.sin(xs = 1, ys = 1) , np.sqrt(2) / 2)
 
-
+@util.dec.print_test
 def test_norm():
     v = np.arange(3)
     norm2 = 1 + 4 + 9
     norm1 = np.sqrt(norm2)
     np.testing.assert_almost_equal(norm1, util.np.norm1(v))
     np.testing.assert_almost_equal(norm2, util.np.norm2(v))
-    
-    
+
+@util.dec.print_test
+def test_empty_list():
+    l = util.np.empty_list(3, list)
+    l[0].append(1)
+    np.testing.assert_(l[0] is not l[1])    
 
 if util.mod.is_main(__name__):
-    import util.log
-    util.log.init_logger(mode = 'a')
-    test_flatten()
-    test_arcsin()
-    test_sin()
-    test_norm()
+#    test_flatten()
+ #   test_arcsin()
+  #  test_sin()
+   # test_norm()
+    test_empty_list()

@@ -19,3 +19,6 @@ def cast(obj, dtype):
 
 def int(obj):
     return cast(obj, 'int')
+    
+def double(obj):
+    return cast(obj, 'double')

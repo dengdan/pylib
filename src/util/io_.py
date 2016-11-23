@@ -12,7 +12,7 @@ import cPickle as pkl
 import commands
 import logging
 
-import util.str
+import util
 
 def mkdir(path):
     """
@@ -82,11 +82,18 @@ def ls(path = '.', suffix = None):
     
     return filtered
 
-def readlines(p):
+def read_lines(p):
     """return the text in a file in lines as a list """
     p = get_absolute_path(p)
     f = open(p,'r')
     return f.readlines()
+    
+def write_lines(p, lines):
+    p = get_absolute_path(p)
+    with open(p, 'w') as f:
+        for line in lines:
+            f.write(line)
+            
 
 def cat(p):
     """return the text in a file as a whole"""
@@ -96,7 +103,5 @@ def cat(p):
 def exists(path):
     return os.path.exists(path)
 
-
-import util.mod
 if util.mod.is_main(__name__):
     print get_absolute_path("~/dataset")

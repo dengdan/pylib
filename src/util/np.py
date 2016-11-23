@@ -97,3 +97,16 @@ def clone(obj, deep = False):
     if not deep:
         return copy.copy(obj)
     return copy.deepcopy(obj)
+
+def empty_list(length, etype):
+    empty_list = [None] * length
+    for i in xrange(length):
+        if etype == list:
+            empty_list[i] = []
+        else:
+            raise NotImplementedError
+    
+    return empty_list
+            
+        
+        

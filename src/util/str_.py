@@ -20,3 +20,11 @@ def endswith(s, suffix, ignore_case = False):
     suffix = tuple(suffix)
     return s.endswith(suffix)
 
+def contains(s, target, ignore_case = False):
+    if ignore_case:
+        s = to_lowercase(s)
+        target = to_lowercase(target)
+    return s.find(target) >= 0
+    
+def replace_all(s, old, new):
+    return s.replace(old, new)

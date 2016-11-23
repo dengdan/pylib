@@ -4,10 +4,14 @@ Created on 2016年10月12日
 
 @author: dengdan
 '''
+import datetime
 import logging
-import util.io
+import util
 import sys
 
+def get_date_str():
+    now = datetime.datetime.now()
+    return now.strftime('%Y-%m-%d %H:%M:%S')  
 
 def init_logger(log_file = None, log_level = logging.DEBUG, mode = 'w'):
     """
@@ -18,7 +22,7 @@ def init_logger(log_file = None, log_level = logging.DEBUG, mode = 'w'):
     fmt = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s: %(message)s'
     
     if log_file is None:
-        log_file = '~/temp/log.log'
+        log_file = '~/temp/log/log_' + get_date_str() + '.log'
     # 此处不能使用logging输出
     print('log file path:' + log_file);
     util.io.make_parent_dir(log_file)
@@ -26,7 +30,7 @@ def init_logger(log_file = None, log_level = logging.DEBUG, mode = 'w'):
                 format= fmt,
                 filename= util.io.get_absolute_path(log_file),
                 filemode=mode)
-        
+    
     console = logging.StreamHandler(stream = sys.stdout)
     console.setLevel(log_level)
     formatter = logging.Formatter(fmt)

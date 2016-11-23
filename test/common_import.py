@@ -20,5 +20,3 @@ import util.dec
 import util.rand
 import util.statistic
 import logging
-util.log.init_logger(log_file = None)
-

@@ -9,10 +9,19 @@ def test_ls():
 @util.dec.print_test
 def test_readlines():
     p = __file__
-    lines = readlines(p)
+    lines = read_lines(p)
     for l in lines:
         print l    
-test_ls()
-test_readlines()
 
+@util.dec.print_test
+def test_write_lines():
+    p = '~/temp/log/w.txt'
+    lines = read_lines(__file__)
+    write_lines(p, lines)
+    lines2 = read_lines(p)
+    np.testing.assert_equal(lines, lines2)
+    
+#test_ls()
+#test_readlines()
+test_write_lines()
 

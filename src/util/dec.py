@@ -8,7 +8,7 @@ def print_calling(fn):
         start = time.time()
         ret = fn(*args1, **args2)
         end = time.time()
-        s = " time used = %f seconds"%(end - start)
+        s = "%s. time used = %f seconds"%(s, (end - start))
         logging.info(s)
         return ret
     return wrapper
