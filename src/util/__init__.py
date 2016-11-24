@@ -6,6 +6,7 @@ import img
 import dec
 import rand
 import mod
+import proc
 import str_ as str
 import io as sys_io
 import io_ as io
