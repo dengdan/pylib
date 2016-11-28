@@ -7,6 +7,7 @@ import dec
 import rand
 import mod
 import proc
+import test
 import str_ as str
 import io as sys_io
 import io_ as io
@@ -14,3 +15,6 @@ import io_ as io
 
 # log.init_logger('~/temp/log/log_' + get_date_str() + '.log')
 
+def exit(code = 0):
+    import sys
+    sys.exit(0)

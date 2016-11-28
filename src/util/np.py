@@ -2,6 +2,11 @@ import numpy as np
 import copy
 
 concat = np.concatenate
+def is_2D(m):
+    '''
+    judge if a matrix is 2-D or not
+    '''
+    return len(np.shape(m)) == 2
 
 def norm1(v):
     return np.sqrt(norm2(v))
@@ -10,8 +15,8 @@ def norm2(v):
     return np.sum(v ** 2)
 
 def cos_dist(v1, v2):
-    length1 = length(v1)
-    length2 = length(v2)
+    length1 = norm2(v1)
+    length2 = norm2(v2)
     return np.dot(v1, v2) / (length1 * length2)
 
 def eu_dist(v1, v2):
@@ -108,5 +113,7 @@ def empty_list(length, etype):
     
     return empty_list
             
-        
+def shuffle(arr):
+    import random
+    random.shuffle(arr)
         

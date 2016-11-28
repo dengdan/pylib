@@ -147,7 +147,7 @@ def save_images(path, img = None):
     path = util.io.get_absolute_path(path)
     util.io.make_parent_dir(path)
     if img is None:
-        plt.gcf().savefig(path)
+        plt.gcf().savefig(path, dpi = 150)
     else:
         plt.imsave(path, img)
 

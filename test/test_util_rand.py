@@ -18,5 +18,14 @@ def test_randint():
     print util.rand.randint()
     print util.rand.randint(10)
     print util.rand.randint(shape = (2, 3))
-test_randint()
-test_normal()
+    
+@util.dec.print_test
+def test_sample():
+    lst = range(1000)
+    n = 20
+    samples = util.rand.sample(zip(lst, lst), n)
+    util.test.assert_equal(len(samples), n)
+
+#test_randint()
+#test_normal()
+test_sample()

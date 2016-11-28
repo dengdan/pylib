@@ -24,6 +24,15 @@ COLOR_BGR_RED = (0, 0, 255)
 
 COLOR_BGR_YELLOW = (0, 255, 255)
 COLOR_BGR_RED = (0, 0, 255)
+    
+def imread(path, rgb = False, mode = cv2.IMREAD_COLOR):
+    path = util.io.get_absolute_path(path)
+    img = cv2.imread(path, mode)
+    if img is None:
+        raise IOError('File not found:%s'%(path))
+    if rgb:
+        img = bgr_to_rgb(img)
+    return img
 
 def imshow(winname, img, mode = IMREAD_UNCHANGED, block = True, position = None):
     if not isinstance(img, np.ndarray):
@@ -44,23 +53,6 @@ def move_win(winname, position = (0, 0)):
     """
     cv2.moveWindow(winname, position[0], position[1])
 
-def cvt_white(img, color = COLOR_BGR_YELLOW):
-    h, w, _ = img.shape
-    for y in range(1, h):
-            for x in range(1, w):
-                if is_white(img[y, x]):
-                    img[y, x] = color
-    return img
-
-def change_color(img, target, color = COLOR_GREEN):
-    """convert pixels of color 'target' to color 'color'"""
-    h, w, _ = img.shape
-    for y in range(1, h):
-            for x in range(1, w):
-                if eq_color(img[y, x], target):
-                    img[y, x] = color
-    return img
-
 
 def eq_color(target, color):
     for i, c in enumerate(color):
@@ -79,27 +71,22 @@ def black(shape):
         shape = get_shape(shape)
     return np.zeros(shape, np.uint8)
     
-def white(shape):
+def white(shape, value = 255):
     if len(np.shape(shape)) >= 2:
         shape = get_shape(shape)
-    return np.ones(shape, np.uint8) * 255
-    
-def imread(path, rgb = False, mode = cv2.IMREAD_COLOR):
-    path = util.io.get_absolute_path(path)
-    img = cv2.imread(path, mode)
-    if img is None:
-        raise IOError('File not found:%s'%(path))
-    if rgb:
-        img = bgr_to_rgb(img)
-    return img
+    return np.ones(shape, np.uint8) * value
     
 def bgr2rgb(img):
     return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-bgr_to_rgb = bgr2rgb
+
+def rgb2gray(img):
+    return cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 
 def ds_size(image_size, kernel_size, stride):
     """calculate the size of downsampling result"""
     image_x, image_y = image_size
+    
+
     kernel_x, kernel_y = kernel_size
     stride_x, stride_y = stride
     
@@ -151,6 +138,11 @@ def rotate_about_center(src, angle, scale=1.):
 
 def rectangle(img, left_up, right_bottom, color, border_width = 1):
     cv2.rectangle(img, left_up, right_bottom, color, border_width)
+
+
+def circle(img, center, r, color, border_width = 1):
+    cv2.circle(img, center, r, color, border_width)
+
 
 def rect_perimeter(left_up, right_bottom):
     """
@@ -211,6 +203,9 @@ _blur_dict = {
               BLUR_GAUSSIAN: gaussian_blur,
               BLUR_BILATERAL: bilateral_blur
 }
+
 def blur(img, blur_type):
     fn = _blur_dict[blur_type]
     return fn(img)
+    
+    

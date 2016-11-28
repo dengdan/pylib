@@ -9,7 +9,7 @@ def kmeans(samples, k, criteria = None, attempts = 3, flags = cv2.KMEANS_RANDOM_
     if criteria == None:
         criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
     samples = np.asarray(samples, dtype = np.float32)
-    compactness,labels,centers = cv2.kmeans(samples, k, criteria, attempts, flags)
+    _,labels,centers = cv2.kmeans(samples, k, criteria, attempts, flags)
     labels = util.np.flatten(labels)
     clusters = [None]*k
     for idx, label in enumerate(labels):
@@ -23,4 +23,3 @@ def kmeans(samples, k, criteria = None, attempts = 3, flags = cv2.KMEANS_RANDOM_
             clusters[idx] = []
             
     return labels, clusters, centers
- 

@@ -9,7 +9,7 @@ def wait_key(target = None, callback = None):
     while key != target:
         key = cv2.waitKey()& 0xFF
 
-    logging.info('Key Pression caught:%s'%(target))
+    logging.debug('Key Pression caught:%s'%(target))
     
     if callback is not None:
         callback()

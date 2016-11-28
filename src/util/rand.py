@@ -29,3 +29,9 @@ def randint(low = 2 ** 30, high = None, shape = None):
     
 def shuffle(lst):
     random.shuffle(lst)
+
+def sample(lst, n):
+    return random.sample(lst, n)
+
+
+    
