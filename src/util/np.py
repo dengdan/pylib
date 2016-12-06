@@ -117,3 +117,16 @@ def shuffle(arr):
     import random
     random.shuffle(arr)
         
+def is_empty(a):
+    '''
+    tell whether an array is empty.
+    If a is multidimensional, it is empty when it contains no entry in the last dimension.
+    '''
+    if a is None:
+        return True
+    
+    shape = np.shape(a)
+    if np.prod(shape) == 0:
+        return True
+    
+    return False

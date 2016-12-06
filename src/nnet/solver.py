@@ -7,28 +7,33 @@ import theano
 import numpy as np
 import theano.tensor as T
 
-import util.io
-import util.dtype as dtype
+import util
+dtype = util.dtype
 class Solver(object):
     def __init__(self, 
         train_iter, 
-        epochs = None,
         total_iterations = None,
+        epoches = None, 
         learning_rate = None,
         val_iter = None,
         val_interval = 1000,
+        val_batches = 100, 
         dump_interval = 5000,
         dump_path = '.',
         supervised = True
         ):
+        """
+        The count of 'epoches' will start from 0 every time when training is started or resumed, and 'totoal_iterations' is recommended.
+        """
         self.supervised = supervised
         self.train_iter = train_iter
         self.val_iter = val_iter
-        self.epochs = epochs        
         self.total_iterations = total_iterations
+        self.epoches = epoches
         self.dump_path = dump_path;
         self.dump_interval = dump_interval
         self.val_interval = val_interval
+        self.val_batches = val_batches
         self.learning_rate = learning_rate
         # the name patterns of dump files
         self.model_dump_name_pattern ='%s_Iteration_%d.model'
@@ -41,9 +46,8 @@ class Solver(object):
         
     
     def get_updates(self, model):
-        pass
+        raise NotImplementedError
         
-    
     def fit(self, model, last_stop_iteration = None):
         if last_stop_iteration != None:
             self.iterations = last_stop_iteration + 1
@@ -54,15 +58,9 @@ class Solver(object):
         # in case where the solver is loaded from a dump, where the __init__() won't be executed
         self.learning_rate = dtype.cast(self.learning_rate, dtype.floatX)
         
-        if self.epochs != None:
-            self.total_iterations = self.epochs * self.train_iter.batch_per_epoch
-        if self.total_iterations == None:
-            raise ValueError('Either epochs or total_iterations must be provided. If both are provided, total_iterations has a higher priority.')
-
-
-        
         if self.supervised:
             inputs = [model.input, model.label]
+            #outputs = [model.loss, model.accuracy, model.ce]
             outputs = [model.loss, model.accuracy]
         else:
             inputs = [model.input]
@@ -70,6 +68,17 @@ class Solver(object):
         
         training_start = time.time()
         train_iter = self.train_iter
+
+        # two conditions, the reach of either one will result in conclusion.
+        if self.total_iterations is None and self.epoches is None:
+            raise ValueError('Either epoches or total_iterations must be provided.')
+        
+        if self.epoches:
+            train_iter.set_maximum_epoches(self.epoches)
+                
+        if self.total_iterations is None:
+            self.total_iterations = np.infty
+        
         val_iter = self.val_iter
         logging.info( 'building theano functions...')
         logging.info('building the training function of %s...' %(model.name))
@@ -78,7 +87,7 @@ class Solver(object):
                     inputs = inputs, 
                     outputs = outputs,
                     updates = self.get_updates(model)
-            )
+        )
 
         t2 = time.time()
         logging.info("building finished, using %d seconds."%(t2 - t1))        
@@ -88,7 +97,7 @@ class Solver(object):
             t1 = time.time() 
             logging.info('building the val function of %s...' %(model.name))
             
-            val = theano.function(
+            val_fn = theano.function(
                     inputs = inputs, 
                     outputs = outputs
             )
@@ -121,14 +130,12 @@ class Solver(object):
                 training_accuracies.append(training_accuracy)
                 t1 = time.time()
                 training_time = t1 - t2
-                epoch = self.iterations // self.train_iter.batch_per_epoch
-                iteration = self.iterations % self.train_iter.batch_per_epoch
-                logging.info("Total Iteration %d (Epoch %d, Iteration %d): loss = %f, accuracy = %f, learning_rate = %f, training time = %f seconds, io time = %f seconds"% (self.iterations, epoch, iteration, training_loss, training_accuracy, self.learning_rate, training_time, io_time))
+                logging.info("Total Iterations:%d, epoch %d: loss = %f, accuracy = %f, learning_rate = %f, training time = %f seconds, io time = %f seconds"% (self.iterations, train_iter.get_current_epoch(), training_loss, training_accuracy, self.learning_rate, training_time, io_time))
             else: # no accuracy for unsupervised learning
                 training_loss = training_fn(data_X)
                 t1 = time.time()
                 training_time = t1 - t2
-                logging.info("Total Iteration %d: loss = %f, learning_rate = %f, training time = %f seconds, io time = %f seconds"% (self.iterations, training_loss, self.learning_rate, training_time, io_time))
+                logging.info("Total Iterations %d: loss = %f, learning_rate = %f, training time = %f seconds, io time = %f seconds"% (self.iterations, training_loss, self.learning_rate, training_time, io_time))
             
             training_losses.append(training_loss)
                         
@@ -137,11 +144,11 @@ class Solver(object):
                 val_loss = []
                 val_accuracy = []
                 logging.info( 'validating model...')
-                val_iter.reset()
-                val_iter.auto_stop = True
-                for batch in val_iter:
-                    data_X = batch.data
-                    data_y = batch.label
+                batch_count = 0
+                while batch_count < self.val_batches:
+                    batch = val_iter.next()
+                    data_X = batch.get_data()
+                    data_y = batch.get_label()
                     if self.supervised:
                         val_loss_batch, val_accuracy_batch = val_fn(data_X, data_y)
                         val_accuracy.append(val_accuracy_batch)
@@ -149,7 +156,10 @@ class Solver(object):
                         val_loss_batch = val_fn(data_X)
                         
                     val_loss.append(val_loss_batch)
-                    logging.info('Validating val batch %d'%(val_iter.batch_count))
+                    logging.info('Validating val batch %d'%(batch_count))
+                
+                    batch_count += 1
+
                 val_losses.append(np.mean(val_loss))
                 val_accuracies.append(np.mean(val_accuracy))
                 logging.info("Total Iteration %d, validation result: loss = %f, accuracy = %f"%(self.iterations, val_losses[-1], val_accuracies[-1]))
@@ -211,10 +221,10 @@ class SimpleGradientDescentSolver(Solver):
     """The most simple gradient descent model, with learning rate fixed after chosen."""
     def __init__(self, 
         train_iter, 
-        epochs = None,
         total_iterations = None,
         learning_rate = 0.0001,
         val_iter = None,
+        epoches = None, 
         val_interval = 1000,
         dump_interval = 5000,
         dump_path = '.',
@@ -223,8 +233,8 @@ class SimpleGradientDescentSolver(Solver):
 
         Solver.__init__(self,
             train_iter = train_iter, 
-            epochs = epochs,
             learning_rate = learning_rate,
+            epoches = epoches,
             total_iterations = total_iterations,
             val_interval = val_interval,
             dump_interval = dump_interval,
@@ -244,9 +254,9 @@ class MomentumGradientDescentSolver(SimpleGradientDescentSolver):
         train_iter, 
         momentum = 0.9,
         decay = 0.0,
-        epochs = None,
+        epoches = None, 
         total_iterations = None,
-        learning_rate = 0.01,
+        learning_rate = 0.001,
         val_iter = None,
         val_interval = 1000,
         dump_interval = 5000,
@@ -257,7 +267,7 @@ class MomentumGradientDescentSolver(SimpleGradientDescentSolver):
         SimpleGradientDescentSolver.__init__(self,
             train_iter = train_iter, 
             val_iter = val_iter,
-            epochs = epochs,
+            epoches = epoches, 
             learning_rate = learning_rate,
             total_iterations = total_iterations,
             val_interval = val_interval,

@@ -49,6 +49,9 @@ def join_path(a, *p):
     return os.path.join(a, *p)
 
 def get_dir(path):
+    '''
+    return the directory it belongs to
+    '''
     path = get_absolute_path(path)
     return os.path.split(path)[0]
 
@@ -103,5 +106,29 @@ def cat(p):
 def exists(path):
     return os.path.exists(path)
 
-if util.mod.is_main(__name__):
-    print get_absolute_path("~/dataset")
+def load_mat(path):
+    import scipy.io as sio
+    path = get_absolute_path(path)
+    return sio.loadmat(path)
+
+def dump_mat(path, dict_obj, append = True):
+    import scipy.io as sio
+    path = get_absolute_path(path)
+    make_parent_dir(path)
+    sio.savemat(file_name = path, mdict =  dict_obj, appendmat = append)
+    
+def dir_mat(path):
+    '''
+    list the variables in mat file.
+    return a list: [(name, shape, dtype), ...]
+    '''
+    import scipy.io as sio
+    path = get_absolute_path(path)
+    return sio.whosmat(path)
+    
+SIZE_UNIT_K = 1024
+SIZE_UNIT_M = SIZE_UNIT_K ** 2
+SIZE_UNIT_G = SIZE_UNIT_K ** 3
+def get_file_size(path, unit = SIZE_UNIT_K):
+    size = os.path.getsize(get_absolute_path(path))
+    return size * 1.0 / unit

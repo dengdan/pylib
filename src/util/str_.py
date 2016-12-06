@@ -6,7 +6,7 @@ def is_str(s):
 def to_lowercase(s):
     return str.lower(s)
     
-def endswith(s, suffix, ignore_case = False):
+def ends_with(s, suffix, ignore_case = False):
     """
     suffix: str, list, or tuple
     """
@@ -20,6 +20,21 @@ def endswith(s, suffix, ignore_case = False):
     suffix = tuple(suffix)
     return s.endswith(suffix)
 
+def starts_with(s, prefix, ignore_case = False):
+    """
+    prefix: str, list, or tuple
+    """
+    if is_str(prefix):
+        prefix = [prefix]
+    prefix = list(prefix)
+    if ignore_case:
+        for idx, pre in enumerate(prefix):
+            prefix[idx] = to_lowercase(pre)    
+        s = to_lowercase(s)
+    prefix = tuple(prefix)
+    return s.startswith(prefix)
+
+
 def contains(s, target, ignore_case = False):
     if ignore_case:
         s = to_lowercase(s)
@@ -28,3 +43,5 @@ def contains(s, target, ignore_case = False):
     
 def replace_all(s, old, new):
     return s.replace(old, new)
+    
+

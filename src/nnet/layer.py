@@ -87,6 +87,7 @@ class SoftmaxOutputLayerWithLoss(FullyConnectedLayer):
         self.predicted = T.argmax(self.output, axis =  1) 
         self.accuracy = T.mean(T.eq(self.predicted, label)) 
         ce = T.log(self.output)[T.arange(0, label.shape[0]), label]
+        self.ce = ce
         self.loss = - T.mean(ce)
     
 

@@ -22,7 +22,7 @@ class LeNet(Model):
         self.conv2_padding = (2, 2)
         self.conv2_stride = (2, 2)
 
-
+        
         self.fc1_input_units = 12 * 56 * 56        
         self.fc1_hidden_units = 1001
         

@@ -1,6 +1,5 @@
 # encoding = utf-8
 from common_import import *
-from util.io import *
 
 @util.dec.print_test
 def test_ls():
@@ -21,7 +20,18 @@ def test_write_lines():
     lines2 = read_lines(p)
     np.testing.assert_equal(lines, lines2)
     
+@util.dec.print_test
+def test_mat_io():
+    path = '~/temp/testpython.mat'
+    util.io.dump_mat(path, {'a': 1,'b': 2,'c': 3,'d': np.ones((3, 3))})   
+    data =  util.io.load_mat(path)
+    for c in data:
+        print data[c]
+      
+    vs = util.io.dir_mat(path)
+    print vs
 #test_ls()
 #test_readlines()
-test_write_lines()
+#test_write_lines()
+test_mat_io()
 
