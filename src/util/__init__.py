@@ -22,4 +22,5 @@ def exit(code = 0):
     import sys
     sys.exit(0)
     
+is_main = mod.is_main
 init_logger = log.init_logger

@@ -9,7 +9,8 @@ import time
 import theano
 import theano.tensor as T
 
-import util.dtype
+import util
+
 class Model(object):
     def __init__(self, name):
         self.params = []
@@ -32,10 +33,40 @@ class Model(object):
             param_count += T.prod(p.shape)
         self.param_count = param_count
         
-        
+    
+    @util.dec.print_calling    
     def get_param_count_fn(self):
         get_param_count = theano.function(
                                           inputs = [],
                                           outputs = self.param_count
                                           )        
         return get_param_count
+        
+    @util.dec.print_calling
+    def get_predict_fn(self, model = None):
+        if model is None:
+            model = self
+        fn = theano.function(
+            inputs = [model.input],
+            outputs = [model.predicted, model.output_layer.output]
+        )
+        return fn
+    
+    @util.dec.print_calling
+    def get_accuracy_fn(self, model = None):
+        if model is None:
+            model = self
+            
+        fn = theano.function(
+            inputs = [model.input, model.label],
+            outputs = [model.accuracy, model.loss, model.predicted, model.output_layer.output]
+        )
+        return fn
+        
+def get_predict_fn(model):
+    m = Model('')
+    return m.get_predict_fn(model)
+    
+def get_accuracy_fn(model):
+    m = Model('')
+    return m.get_accuracy_fn(model)

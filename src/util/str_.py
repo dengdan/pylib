@@ -44,4 +44,5 @@ def contains(s, target, ignore_case = False):
 def replace_all(s, old, new):
     return s.replace(old, new)
     
-
+def remove_all(s, sub):
+    return replace_all(s, sub, '')

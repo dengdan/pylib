@@ -1,7 +1,6 @@
 #coding=utf-8
 '''
 Created on 2016年9月27日
-
 @author: dengdan
 '''
 import numpy as np
@@ -22,3 +21,14 @@ def int(obj):
     
 def double(obj):
     return cast(obj, 'double')
+    
+def is_number(obj):
+	try:
+		obj + 1
+	except:
+		return False
+
+	return True
+    
+def is_str(s):
+    return type(s) == str

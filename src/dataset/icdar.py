@@ -6,14 +6,16 @@ read data from icdar dataset.
 import util
 import evaluate
 
-from config import training_image_name_pattern, training_gt_name_pattern
+icdar2015_ch4_training_images = '~/dataset/ICDAR2015/Challenge4/ch4_training_images/'
+icdar2015_ch4_training_gt = '~/dataset/ICDAR2015/Challenge4/ch4_training_localization_transcription_gt/'
 
-GREEN = 'green'
+training_image_name_pattern = 'img_%d.jpg'
+training_gt_name_pattern = 'gt_img_%d.txt'
 
 
-def evaluate_proposal(proposal, idx):
-    bboxes, words = get_gt(idx)
-    image = get_image(idx)
+def evaluate_proposal(proposal, idx, img_root_path = icdar2015_ch4_training_images, gt_root_path = icdar2015_ch4_training_gt):
+    bboxes, words = get_gt(idx, gt_root_path)
+    image = get_image(idx, img_root_path)
     targets = []
     for idx_gt in range(len(bboxes)):
         box, word = bboxes[idx_gt], words[idx_gt]
@@ -23,10 +25,11 @@ def evaluate_proposal(proposal, idx):
     
     return targets
 
-def get_gt(idx):
+def get_gt(idx, root_path = icdar2015_ch4_training_gt):
     bboxes = []
     words = []
-    gt = util.io.read_lines(training_gt_name_pattern%(idx))
+    gt_path = util.io.join_path(root_path, training_gt_name_pattern%(idx))
+    gt = util.io.read_lines(gt_path)
     for line in gt:
         points, word = parse_gt_line(line)
         bboxes.append(points)
@@ -35,12 +38,23 @@ def get_gt(idx):
     return bboxes, words
     
     
-def get_image(idx):
-    rgb = True
+def get_image(idx, rgb = True, root_path = icdar2015_ch4_training_images):
     mode = util.img.IMREAD_UNCHANGED
-    image = util.img.imread(training_image_name_pattern%(idx), rgb = rgb, mode = mode)
+    if util.dtype.is_number(idx):
+        image_name = training_image_name_pattern%(idx)
+    elif util.dtype.is_str(idx):
+        image_name = idx
+    else:
+        raise ValueError
+    image_path = util.io.join_path(root_path, image_name)
+    image = util.img.imread(image_path, rgb = rgb, mode = mode)
     return image
 
+def get_image_idx(image_name):
+    image_name = util.str.remove_all(image_name, 'img_')
+    image_name = util.str.remove_all(image_name, '.jpg')
+    return int(image_name)
+    
 def parse_gt_line(line):
     points = [None] * 4
     word = None
