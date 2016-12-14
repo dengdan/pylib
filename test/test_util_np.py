@@ -78,9 +78,12 @@ def test_empty_list():
     l[0].append(1)
     np.testing.assert_(l[0] is not l[1])    
 
+
+
 if util.mod.is_main(__name__):
 #    test_flatten()
  #   test_arcsin()
   #  test_sin()
    # test_norm()
     test_empty_list()
+    

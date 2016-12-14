@@ -130,3 +130,9 @@ def is_empty(a):
         return True
     
     return False
+    
+def angle_with_x(x, y):
+    """
+    return the arctan x/y, in range [-pi, pi]
+    """
+    return np.arctan2(y, x)
