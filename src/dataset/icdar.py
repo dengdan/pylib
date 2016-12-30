@@ -1,8 +1,9 @@
 #encoding=utf-8
+
 """
 read data from icdar dataset.
 """
-
+import numpy as np
 import util
 import evaluate
 
@@ -25,16 +26,23 @@ def evaluate_proposal(proposal, idx, img_root_path = icdar2015_ch4_training_imag
     
     return targets
 
-def get_gt(idx, root_path = icdar2015_ch4_training_gt):
+def get_gt(idx, root_path = icdar2015_ch4_training_gt, valid_only = False, ret_contours = False):
     bboxes = []
     words = []
     gt_path = util.io.join_path(root_path, training_gt_name_pattern%(idx))
     gt = util.io.read_lines(gt_path)
     for line in gt:
         points, word = parse_gt_line(line)
-        bboxes.append(points)
-        words.append(word)
+
+        if valid_only and util.str.contains(word, '#'):
+            continue
         
+        words.append(word)
+        if ret_contours:
+            bboxes.append(util.img.points_to_contour(points))
+        else:
+            bboxes.append(points)
+    bboxes = np.asarray(bboxes)
     return bboxes, words
     
     

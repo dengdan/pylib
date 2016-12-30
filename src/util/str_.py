@@ -1,4 +1,7 @@
 # encoding = utf-8
+def int_array_to_str(arr):
+    """turn an int array to a str"""
+    return "".join(map(chr, arr))
 
 def is_str(s):
     return type(s) == str

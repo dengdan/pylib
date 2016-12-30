@@ -9,10 +9,14 @@ def is_2D(m):
     return len(np.shape(m)) == 2
 
 def norm1(v):
-    return np.sqrt(norm2(v))
+    return np.sum(np.abs(v))
 
 def norm2(v):
+    return np.sqrt(np.sum(v ** 2))
+
+def norm2_squared(v):
     return np.sum(v ** 2)
+
 
 def cos_dist(v1, v2):
     length1 = norm2(v1)
@@ -21,7 +25,7 @@ def cos_dist(v1, v2):
 
 def eu_dist(v1, v2):
     v = v1 - v2
-    return norm1(v)
+    return norm2(v)
 
 def chi_squared_dist(f1, f2):
     dist = 0
@@ -95,7 +99,7 @@ def sum_all(m):
     """
     sum up all the elements in a multi-dimension array
     """
-    return sum(flatten(m))
+    return np.sum(m)
     
     
 def clone(obj, deep = False):
@@ -136,3 +140,5 @@ def angle_with_x(x, y):
     return the arctan x/y, in range [-pi, pi]
     """
     return np.arctan2(y, x)
+    
+

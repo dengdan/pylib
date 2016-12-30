@@ -34,11 +34,13 @@ def imread(path, rgb = False, mode = cv2.IMREAD_COLOR):
         img = bgr2rgb(img)
     return img
 
-def imshow(winname, img, mode = IMREAD_UNCHANGED, block = True, position = None, maximized = False):
+def imshow(winname, img, block = True, position = None, maximized = False, rgb = False):
     if not isinstance(img, np.ndarray):
         img = imread(path = img, mode = mode)
     
     cv2.namedWindow(winname, cv2.WINDOW_NORMAL)
+    if rgb:
+        img = rgb2bgr(img)
     cv2.imshow(winname, img)
     if position is not None:
 #         cv2.moveWindow(winname, position[0], position[1])
@@ -46,6 +48,7 @@ def imshow(winname, img, mode = IMREAD_UNCHANGED, block = True, position = None,
     
     if maximized:
         maximize_win(winname)  
+        
         
     if block:
 #         cv2.waitKey(0)
@@ -87,10 +90,14 @@ def black(shape):
 def white(shape, value = 255):
     if len(np.shape(shape)) >= 2:
         shape = get_shape(shape)
-    return np.ones(shape, np.uint8) * value
+    return np.ones(shape, np.uint8) * np.uint8(value)
     
 def bgr2rgb(img):
     return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+def rgb2bgr(img):
+    return cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+
 
 def rgb2gray(img):
     return cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
@@ -352,3 +359,73 @@ def rotate_about_center(src, angle, scale=1.):
     rot_mat[1,2] += rot_move[1]
     return cv2.warpAffine(src, rot_mat, (int(math.ceil(nw)), int(math.ceil(nh))), flags=cv2.INTER_LANCZOS4)
 
+
+def get_rect_iou(rects1, rects2):
+    """
+    calculate the iou between rects1 and rects2
+    each rect consists of four points:[min_x, min_y, max_x, max_y]
+    return: a iou matrix, len(rects1) * len(rects2)
+    """
+    rects1, rects2 = np.asarray(rects1), np.asarray(rects2)
+
+    def _to_matrix(p, ps):
+        p = np.ones((len(ps), 1)) * p
+        ps = np.reshape(ps, (len(ps), 1))
+        temp =np.hstack([p, ps])
+        return temp
+    
+    def _get_max(p, ps):
+        return np.max(_to_matrix(p, ps), axis = 1)
+    
+    def _get_min(p, ps):
+        return np.min(_to_matrix(p, ps), axis = 1)
+ 
+    
+    def _get_area(rect):
+        w, h = rect[:, 2] - rect[:, 0] + 1.0 , rect[:, 3] - rect[:, 1] + 1.0
+        return w * h
+
+    def _get_inter(rect1, rects2):
+            x1 = _get_max(rect1[0], rects2[:, 0])
+            y1 = _get_max(rect1[1], rects2[:, 1])
+            
+            x2 = _get_min(rect1[2], rects2[:, 2])
+            y2 = _get_min(rect1[3], rects2[:, 3])
+        
+            w,h = x2-x1 +1, y2 - y1 + 1
+            areas = w * h
+            areas[np.where(w < 0)] = 0
+            areas[np.where(h < 0)] = 0
+            return areas
+            
+    area2 = _get_area(rects2)
+    area1 = _get_area(rects1)
+    iou = np.zeros((len(rects1), len(rects2)))
+    for ri in range(len(rects1)):
+        inter = _get_inter(rects1[ri, :], rects2)
+        union = area1[ri] + area2 - inter
+        iou[ri, :] = np.transpose( inter / union)
+    return iou
+
+def find_contours(mask):
+    mask = np.asarray(mask, dtype = np.uint8)
+    mask = mask.copy()
+    contours, _ = cv2.findContours(mask, mode = cv2.RETR_CCOMP, method = cv2.CHAIN_APPROX_NONE)
+    return contours
+
+def find_two_level_contours(mask):
+    mask = mask.copy()
+    contours, tree = cv2.findContours(mask, mode = cv2.RETR_CCOMP, method = cv2.CHAIN_APPROX_NONE)
+    return contours, tree
+
+def convex_hull(contour):
+    hull = cv2.convexHull(contour, returnPoints=1)
+    return hull
+    
+def random_color_3():
+    c = util.rand.randint(low = 0, high = 255, shape = (3, ))
+#     c = np.uint8(c)
+    return c
+
+def get_contour_area(cnt):
+    return cv2.contourArea(cnt)

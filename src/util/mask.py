@@ -4,16 +4,6 @@ import numpy as np
 import util
 from util import nb as neighbour
 
-def find_contour(mask):
-    mask = mask.copy()
-    contours, _ = cv2.findContours(mask, mode = cv2.RETR_CCOMP, method = cv2.CHAIN_APPROX_NONE)
-    return contours
-
-@util.dec.print_calling
-def find_two_level_contours(mask):
-    mask = mask.copy()
-    contours, tree = cv2.findContours(mask, mode = cv2.RETR_CCOMP, method = cv2.CHAIN_APPROX_NONE)
-    return contours, tree
     
 def find_white_components(mask, min_area = 0):
     mask = (mask == 0) * 1

@@ -48,7 +48,7 @@ class Model(object):
             model = self
         fn = theano.function(
             inputs = [model.input],
-            outputs = [model.predicted, model.output_layer.output]
+            outputs = [model.predicted, model.output]
         )
         return fn
     
@@ -59,7 +59,7 @@ class Model(object):
             
         fn = theano.function(
             inputs = [model.input, model.label],
-            outputs = [model.accuracy, model.loss, model.predicted, model.output_layer.output]
+            outputs = [model.accuracy, model.loss, model.predicted, model.output]
         )
         return fn
         

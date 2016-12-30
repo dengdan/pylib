@@ -104,6 +104,7 @@ def cat(p):
     return commands.getoutput(cmd)
 
 def exists(path):
+    path = get_absolute_path(path)
     return os.path.exists(path)
 
 def load_mat(path):

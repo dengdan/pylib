@@ -126,6 +126,7 @@ class Solver(object):
             t2 = time.time()
             io_time = t2 - t1
             if self.supervised:
+                logging.debug('forwarding and then backpropogating...')
                 training_loss, training_accuracy = training_fn(data_X, data_y)
                 training_accuracies.append(training_accuracy)
                 t1 = time.time()

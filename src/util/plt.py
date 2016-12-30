@@ -8,20 +8,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 import util
         
-def hist(x, title = None, save_path = '/home/dengdan/images/', show = False, block = False, bin_count = 100, bins = None):    
-    if len(x.shape) > 1:
+def hist(x, title, show = True, save = False, save_path = None, bin_count = 100, bins = None):    
+    x = np.asarray(x)
+    if len(np.shape(x)) > 1:
         x = np.reshape(x, np.prod(x.shape))
     if bins == None:
         bins = np.linspace(start = min(x), stop = max(x), num = bin_count, endpoint = True, retstep = False)
     plt.figure(num = title)
     plt.hist(x, bins)
-    util.io.mkdir(save_path);
-    path = save_path + title + '.png'
-    plt.savefig(path)
-    plt.close()
+    
+    if save:
+        if save_path is None:
+            raise ValueError
+        path = util.io.join_path(save_path, title + '.png')
+        save_image(path)
     if show:
-#         plt.show(block = block)
-        util.img.imshow(title, path, block = block)        
+        plt.show()
+        #util.img.imshow(title, path, block = block)        
 
 def plot_solver_data(solver_path):
     data = util.io.load(solver_path)
@@ -138,12 +141,12 @@ def show_images(images, titles = None, shape = None, share_axis = False,
     if save:
         if path is None:
             raise ValueError('path can not be None when save is True')
-        save_images(path)
+        save_image(path)
     if show:
         plt.show()
     return ret_axes
 
-def save_images(path, img = None):
+def save_image(path, img = None):
     path = util.io.get_absolute_path(path)
     util.io.make_parent_dir(path)
     if img is None:

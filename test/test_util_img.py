@@ -107,7 +107,41 @@ def _test_get_contour_region_iou():
     cnt1 = util.img.points_to_contour(rect1)
     cnt2 = util.img.points_to_contour(rect2)
     util.test.assert_almost_equal(util.img.get_contour_region_iou(img, cnt1, cnt2), 1. / 7, 1)
+
+
+@util.dec.print_test
+def _test_rect_iou():
+    img = util.img.black((100, 100))
+    rect1 = util.img.get_rect_points((10, 30), (60, 80))
+    rect2 = util.img.get_rect_points((35, 5), (85, 55))
+    cnt1 = util.img.points_to_contour(rect1)
+    cnt2 = util.img.points_to_contour(rect2)
+    # util.test.assert_almost_equal(util.img.get_contour_region_iou(img, cnt1, cnt2), 1. / 7, 1)
+    iou = util.img.get_contour_region_iou(img, cnt1, cnt2)
+    rects1 = [[10, 30, 60, 80], [35, 5, 85, 55], [90, 90, 95, 95]]
+    rects2 = [[10, 30, 60, 80], [35, 5, 85, 55]]
+    iou_matrix = util.img.get_rect_iou(rects1, rects2)
+    print iou_matrix
     
+    
+@util.dec.print_test
+def _test_contour_convex():
+        
+    mask = util.img.black((100, 100))
+    util.img.rectangle(img = mask, left_up = (30, 30), right_bottom = (99, 99), color = 1, border_width = -1)
+    util.img.rectangle(img = mask, left_up = (50, 50), right_bottom = (60, 60), color = 0, border_width = -1)
+    util.img.rectangle(img = mask, left_up = (40, 20), right_bottom = (50, 40), color = 0, border_width = -1)
+
+    # util.plt.show_images(images=[mask], titles=['Mask', 'Hole Mask'])
+
+    contours = util.img.find_contours(mask)
+    vis = util.img.black((100, 100))
+    util.img.draw_contours(vis, contours, idx = 0, color = 1, border_width = 1)
+
+    hull = util.img.convex_hull(contours[0])
+    util.img.draw_contours(mask, [hull], idx = -1, color = 1, border_width = 1)
+    util.plt.show_images(images = [mask, vis])
+
 if util.mod.is_main(__name__):
     util.init_logger()
     #test_rect_perimeter()
@@ -118,4 +152,6 @@ if util.mod.is_main(__name__):
     #_test_translate()
     #_test_get_cnt_rect_bbox()
     #_test_get_cnt_region_in_rect()
-    _test_get_contour_region_iou()
+    #_test_get_contour_region_iou()
+    #_test_rect_iou()
+    _test_contour_convex()
