@@ -1,6 +1,6 @@
 #encoding = utf-8
 import theano.tensor as T
-
+import numpy as np
 def identity(x):
     return x
 
@@ -9,9 +9,11 @@ def cross_entropy(p, target):
     """
     shape = (n_examples, ...)
     """
-    p = T.flatten(p, outdim = 2)
-    target = T.flatten(target, outdim = 2)
-    input = target * T.log(p) + (1 - target) * T.log(1 - p)
+#     p = T.flatten(p, outdim = 1)
+#     target = T.flatten(target, outdim = 1)
+#     input = target * T.log(p) + (1 - target) * T.log(1 - p)
+    p = p + np.exp(-50)
+    input = target * T.log(p)
     return T.mean(T.sum(input =  - input, axis = 1))    
     
 def mean_square(p, target):

@@ -141,4 +141,6 @@ def angle_with_x(x, y):
     """
     return np.arctan2(y, x)
     
-
+def has_nan(x):
+    test = x != x
+    return np.sum(test) > 0

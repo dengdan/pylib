@@ -61,7 +61,7 @@ class Solver(object):
         if self.supervised:
             inputs = [model.input, model.label]
             #outputs = [model.loss, model.accuracy, model.ce]
-            outputs = [model.loss, model.accuracy]
+            outputs = [model.loss, model.accuracy, model.output]
         else:
             inputs = [model.input]
             outputs = model.loss
@@ -127,7 +127,8 @@ class Solver(object):
             io_time = t2 - t1
             if self.supervised:
                 logging.debug('forwarding and then backpropogating...')
-                training_loss, training_accuracy = training_fn(data_X, data_y)
+                training_loss, training_accuracy, output = training_fn(data_X, data_y)
+#                 util.io.dump('~/temp/no-use/loss.pkl', [output, data_y])
                 training_accuracies.append(training_accuracy)
                 t1 = time.time()
                 training_time = t1 - t2
@@ -281,12 +282,13 @@ class MomentumGradientDescentSolver(SimpleGradientDescentSolver):
         self.update_value = None 
         self.decay = dtype.cast(decay, dtype.floatX)
         
+        
     def get_updates(self, model):
         params = model.params_to_be_updated
-        if self.update_value == None:
+        if self.update_value is None:
             self.update_value = [p * 0 for p in params]
+        
         self.update_value = [self.momentum * v - self.decay * self.learning_rate * p - self.learning_rate * T.grad(model.loss, p) for (p, v) in zip(params, self.update_value)]
         updates = [(p, p + v) for (p, v) in zip(params, self.update_value)]
         return updates
-        
 
