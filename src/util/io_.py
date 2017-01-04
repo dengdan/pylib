@@ -80,7 +80,7 @@ def ls(path = '.', suffix = None):
         
     filtered = []
     for f in files:
-        if util.str.endswith(f, suffix, ignore_case = True):
+        if util.str.ends_with(f, suffix, ignore_case = True):
             filtered.append(f)
     
     return filtered
@@ -133,3 +133,19 @@ SIZE_UNIT_G = SIZE_UNIT_K ** 3
 def get_file_size(path, unit = SIZE_UNIT_K):
     size = os.path.getsize(get_absolute_path(path))
     return size * 1.0 / unit
+    
+    
+def create_h5(path):
+    import h5py
+    path = get_absolute_path(path)
+    make_parent_dir(path)
+    return h5py.File(path, 'w');
+def open_h5(path):
+    import h5py
+    path = get_absolute_path(path)
+    return h5py.File(path, 'r');
+    
+def read_h5(h5, key):
+    return h5[key][:]
+def read_h5_attrs(h5, key, attrs):
+    return h5[key].attrs[attrs]
