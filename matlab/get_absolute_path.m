@@ -5,5 +5,5 @@ function abs_path = get_absolute_path(p)
     abs_path = pwd;
     cd(cur);
     
-    abs_path = fullfile(abs_path, sprintf('%s%s', file_name, ext))
+    abs_path = fullfile(abs_path, sprintf('%s%s', file_name, ext));
 end
