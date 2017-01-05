@@ -10,6 +10,7 @@ import numpy as np
 
 import nnet.init as init
 import nnet.fn
+import util
 import util.dtype as dtype
 from util.rand import rng
 from util.t import trng
@@ -89,5 +90,21 @@ class SoftmaxOutputLayerWithLoss(FullyConnectedLayer):
         ce = T.log(self.output)[T.arange(0, label.shape[0]), label]
         self.ce = ce
         self.loss = - T.mean(ce)
-    
+
+class DeconvolutionLayer(Layer):
+    def __init__(self, input, filter_shape, stride, padding = (0, 0), name = 'deconv' ):
+        Layer.__init__(self, input, name, activation = None)
+        W_value = util.rand.normal(filter_shape)
+        W_value = np.asarray(W_value, dtype = util.dtype.floatX)
+        self.W = theano.shared(value = W_value, borrow = True)
+        
+        s1, s2 = stride;
+        p1, p2 = padding;
+        k1, k2 = filter_shape[-2:]
+        o_prime1 = s1 * (self.input.shape[2] - 1) + k1 - 2 * p1
+        o_prime2 = s2 * (self.input.shape[3] - 1) + k2 - 2 * p2
+        output_shape=(None, None, o_prime1, o_prime2)
+        self.output_shape = output_shape
+        self.output = T.nnet.abstract_conv.conv2d_grad_wrt_inputs(output_grad = self.input, input_shape = output_shape, filters = self.W, filter_shape = filter_shape, border_mode= padding, subsample= stride)
+        self.params = [self.W]
 
