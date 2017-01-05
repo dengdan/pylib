@@ -44,6 +44,7 @@ class Solver(object):
         self.val_losses = []
         self.val_accuracies = []
         self.catch_memory_error = False
+        self.iterations = 0;
         
     def get_updates(self, model):
         raise NotImplementedError
