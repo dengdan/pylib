@@ -89,7 +89,10 @@ class Solver(object):
                     outputs = outputs,
                     updates = self.get_updates(model)
         )
-
+#         debug_fn = theano.function(
+#                    inputs = [model.input],
+#                    outputs = [model.layers[-2].output.shape, model.layers[-1].output.shape]
+#        )
         t2 = time.time()
         logging.info("building finished, using %d seconds."%(t2 - t1))        
         
@@ -136,6 +139,7 @@ class Solver(object):
                         continue
                 else:
                     training_loss, training_accuracy, output = training_fn(data_X, data_y)
+#                 s = debug_fn(data_X)
 #                 util.io.dump('~/temp/no-use/loss.pkl', [output, data_y])
                 training_accuracies.append(training_accuracy)
                 t1 = time.time()
