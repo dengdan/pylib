@@ -3,10 +3,10 @@ floatX=float32
 device=gpu
 force_device = 1
 #mode = FAST_COMPILE
-[cuda]
 
+[cuda]
 root=/usr/local/cuda
 
 [lib]
-#cnmem = 1
+cnmem = 1
 

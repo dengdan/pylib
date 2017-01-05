@@ -43,15 +43,16 @@ class Solver(object):
         self.training_accuracies = []
         self.val_losses = []
         self.val_accuracies = []
+        self.catch_memory_error = False
         
-    
     def get_updates(self, model):
         raise NotImplementedError
         
-    def fit(self, model, last_stop_iteration = None):
+    def fit(self, model, last_stop_iteration = None, catch_memory_error = False):
+        self.catch_memory_error = catch_memory_error;
         if last_stop_iteration != None:
             self.iterations = last_stop_iteration + 1
-        else:
+        elif not self.iterations > 0:
             self.iterations = 0
         logging.info('start from iteration %d'%(self.iterations))
         
@@ -127,7 +128,14 @@ class Solver(object):
             io_time = t2 - t1
             if self.supervised:
                 logging.debug('forwarding and then backpropogating...')
-                training_loss, training_accuracy, output = training_fn(data_X, data_y)
+                if self.catch_memory_error:
+                    try:
+                        training_loss, training_accuracy, output = training_fn(data_X, data_y)
+                    except MemoryError:
+                        logging.error('MemoryError')
+                        continue
+                else:
+                    training_loss, training_accuracy, output = training_fn(data_X, data_y)
 #                 util.io.dump('~/temp/no-use/loss.pkl', [output, data_y])
                 training_accuracies.append(training_accuracy)
                 t1 = time.time()
