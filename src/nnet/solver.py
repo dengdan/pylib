@@ -44,7 +44,7 @@ class Solver(object):
         self.val_losses = []
         self.val_accuracies = []
         self.catch_memory_error = False
-        self.iterations = 0;
+        self.iterations = -1;
         
     def get_updates(self, model):
         raise NotImplementedError
@@ -53,8 +53,9 @@ class Solver(object):
         self.catch_memory_error = catch_memory_error;
         if last_stop_iteration != None:
             self.iterations = last_stop_iteration + 1
-        elif not self.iterations > 0:
-            self.iterations = 0
+        else:
+            self.iterations += 1
+        
         logging.info('start from iteration %d'%(self.iterations))
         
         # in case where the solver is loaded from a dump, where the __init__() won't be executed
