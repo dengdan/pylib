@@ -173,3 +173,6 @@ def show(maximized = False):
 def draw():
     plt.gcf().canvas.draw()
 
+def no_display():
+    import matplotlib as mpl
+    mpl.use('Agg')
