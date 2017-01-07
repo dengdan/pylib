@@ -8,19 +8,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import util
         
-def hist(x, title, show = True, save = False, save_path = None, bin_count = 100, bins = None):    
+def hist(x, title, normed = False, show = True, save = False, save_path = None, bin_count = 100, bins = None):    
     x = np.asarray(x)
     if len(np.shape(x)) > 1:
         x = np.reshape(x, np.prod(x.shape))
     if bins == None:
         bins = np.linspace(start = min(x), stop = max(x), num = bin_count, endpoint = True, retstep = False)
     plt.figure(num = title)
+    
     plt.hist(x, bins)
     
     if save:
         if save_path is None:
             raise ValueError
-        path = util.io.join_path(save_path, title + '.png')
+        path = util.io.join_path(save_path, title + '.png', normed = normed)
         save_image(path)
     if show:
         plt.show()
