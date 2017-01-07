@@ -106,5 +106,6 @@ class DeconvolutionLayer(Layer):
         output_shape=(None, None, o_prime1, o_prime2)
         self.output_shape = output_shape
         self.output = T.nnet.abstract_conv.conv2d_grad_wrt_inputs(output_grad = self.input, input_shape = output_shape, filters = self.W, filter_shape = filter_shape, border_mode= padding, subsample= stride)
+        self.lin_output = self.output
         self.params = [self.W]
 

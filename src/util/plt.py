@@ -11,7 +11,8 @@ import util
 def hist(x, title, normed = False, show = True, save = False, save_path = None, bin_count = 100, bins = None):    
     x = np.asarray(x)
     if len(np.shape(x)) > 1:
-        x = np.reshape(x, np.prod(x.shape))
+#         x = np.reshape(x, np.prod(x.shape))
+        x = util.np.flatten(x)
     if bins == None:
         bins = np.linspace(start = min(x), stop = max(x), num = bin_count, endpoint = True, retstep = False)
     plt.figure(num = title)
@@ -174,6 +175,4 @@ def show(maximized = False):
 def draw():
     plt.gcf().canvas.draw()
 
-def no_display():
-    import matplotlib as mpl
-    mpl.use('Agg')
+

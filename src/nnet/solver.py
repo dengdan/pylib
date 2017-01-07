@@ -49,7 +49,7 @@ class Solver(object):
     def get_updates(self, model):
         raise NotImplementedError
         
-    def fit(self, model, last_stop_iteration = None, catch_memory_error = False):
+    def fit(self, model, last_stop_iteration = None, catch_memory_error = False, debug = False):
         self.catch_memory_error = catch_memory_error;
         if last_stop_iteration != None:
             self.iterations = last_stop_iteration + 1
@@ -91,10 +91,10 @@ class Solver(object):
                     outputs = outputs,
                     updates = self.get_updates(model)
         )
-#         debug_fn = theano.function(
-#                    inputs = [model.input],
-#                    outputs = [model.layers[-2].output.shape, model.layers[-1].output.shape]
-#        )
+        grad_params = [ly.W for ly in model.layers]
+        if debug:
+            logging.info('building debugging function...')
+            debug_fn = model.get_sensitivity_fn(-1)
         t2 = time.time()
         logging.info("building finished, using %d seconds."%(t2 - t1))        
         
@@ -132,15 +132,27 @@ class Solver(object):
             t2 = time.time()
             io_time = t2 - t1
             if self.supervised:
+                if debug:
+                    logging.info('saving gradients...')
+                    grads = debug_fn(data_X, data_y);
+                    for idx, grad in enumerate(grads):
+                        title = 'Iteration_%d_grad_of_%s'%(self.iterations, model.layers[idx].name)
+                        util.plt.hist(grad, title = title , normed = True, 
+                                      show = False, save = True, save_path = '~/temp/training_grad/%f'%(self.learning_rate), bin_count = 100)
+                        
                 logging.debug('forwarding and then backpropogating...')
                 if self.catch_memory_error:
                     try:
                         training_loss, training_accuracy, output = training_fn(data_X, data_y)
+                        
                     except MemoryError:
                         logging.error('MemoryError')
                         continue
                 else:
                     training_loss, training_accuracy, output = training_fn(data_X, data_y)
+                    
+
+                    
 #                 s = debug_fn(data_X)
 #                 util.io.dump('~/temp/no-use/loss.pkl', [output, data_y])
                 training_accuracies.append(training_accuracy)
