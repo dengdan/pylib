@@ -146,11 +146,11 @@ def show_images(images, titles = None, shape = None, share_axis = False,
         plt.show()
     return ret_axes
 
-def save_image(path, img = None):
+def save_image(path, img = None, dpi = 150):
     path = util.io.get_absolute_path(path)
     util.io.make_parent_dir(path)
     if img is None:
-        plt.gcf().savefig(path, dpi = 150)
+        plt.gcf().savefig(path, dpi = dpi)
     else:
         plt.imsave(path, img)
 
