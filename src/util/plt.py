@@ -16,12 +16,12 @@ def hist(x, title, normed = False, show = True, save = False, save_path = None, 
         bins = np.linspace(start = min(x), stop = max(x), num = bin_count, endpoint = True, retstep = False)
     plt.figure(num = title)
     
-    plt.hist(x, bins)
+    plt.hist(x, bins, normed = normed)
     
     if save:
         if save_path is None:
             raise ValueError
-        path = util.io.join_path(save_path, title + '.png', normed = normed)
+        path = util.io.join_path(save_path, title + '.png')
         save_image(path)
     if show:
         plt.show()
