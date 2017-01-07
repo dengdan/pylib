@@ -181,7 +181,7 @@ class Solver(object):
                 logging.info("Total Iteration %d, validation result: loss = %f, accuracy = %f"%(self.iterations, val_losses[-1], val_accuracies[-1]))
 
             # dump data and model
-            if (self.iterations + 1) % self.dump_interval == 0:
+            if (self.iterations) % self.dump_interval == 0:
                 self.training_losses = training_losses
                 self.training_accuracies = training_accuracies
                 self.val_losses = val_losses
