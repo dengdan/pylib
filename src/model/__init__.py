@@ -62,7 +62,33 @@ class Model(object):
             outputs = [model.accuracy, model.loss, model.predicted, model.output]
         )
         return fn
+    
+    def get_sensitivity_fn(self):
+        fn = theano.function(
+                        inputs = [self.input, self.label],
+                        outputs = [T.grad(self.loss, layer.lin_output) for layer in self.layers]
+            )
+        return fn
         
+    def get_output_fn(self):
+        fn = theano.function(
+                         inputs = [self.input],
+                         outputs = [layer.output for layer in self.layers]
+                             )
+        return fn
+    
+    def get_grad_fn(self):
+        update_value = [T.grad(self.loss, p) for p in self.params]
+        fn = theano.function(
+                             inputs = [self.input, self.label],
+                             outputs = update_value
+                             )
+        return fn
+    
+    def get_weight_values(self):
+        weights = [layer.params[0].get_value() for layer in self.layers]
+        return weights
+    
 def get_predict_fn(model):
     m = Model('')
     return m.get_predict_fn(model)

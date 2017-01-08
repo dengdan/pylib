@@ -16,9 +16,7 @@ def hist(x, title, normed = False, show = True, save = False, save_path = None, 
     if bins == None:
         bins = np.linspace(start = min(x), stop = max(x), num = bin_count, endpoint = True, retstep = False)
     plt.figure(num = title)
-    
     plt.hist(x, bins, normed = normed)
-    
     if save:
         if save_path is None:
             raise ValueError

@@ -1,6 +1,7 @@
 import numpy as np
 import copy
 
+TINY = np.exp(-100)
 concat = np.concatenate
 def is_2D(m):
     '''
@@ -140,7 +141,23 @@ def angle_with_x(x, y):
     return the arctan x/y, in range [-pi, pi]
     """
     return np.arctan2(y, x)
+
+def has_infty(x):
+    test = x == np.infty
+    return np.sum(test) > 0
     
 def has_nan(x):
+    x = np.asarray(x)
     test = x != x
     return np.sum(test) > 0
+
+def has_nan_or_infty(x):
+    if has_nan(x):
+        return True
+    
+    if has_infty(x):
+        return True
+    
+        
+def iterable(x):
+    return np.iterable(x)

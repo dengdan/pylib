@@ -6,6 +6,7 @@ import time
 import theano
 import numpy as np
 import theano.tensor as T
+from theano.compile.nanguardmode import NanGuardMode
 
 import util
 dtype = util.dtype
@@ -90,11 +91,14 @@ class Solver(object):
                     inputs = inputs, 
                     outputs = outputs,
                     updates = self.get_updates(model)
+#                     mode=NanGuardMode(nan_is_error=True)#, inf_is_error=True, big_is_error=True)
         )
-        grad_params = [ly.W for ly in model.layers]
+        
         if debug:
             logging.info('building debugging function...')
-            debug_fn = model.get_sensitivity_fn(-1)
+#             debug_fn = model.get_sensitivity_fn()
+            debug_fn = model.get_output_fn()
+#             debug_fn = model.get_grad_fn()
         t2 = time.time()
         logging.info("building finished, using %d seconds."%(t2 - t1))        
         
@@ -133,13 +137,19 @@ class Solver(object):
             io_time = t2 - t1
             if self.supervised:
                 if debug:
-                    logging.info('saving gradients...')
-                    grads = debug_fn(data_X, data_y);
-                    for idx, grad in enumerate(grads):
-                        title = 'Iteration_%d_grad_of_%s'%(self.iterations, model.layers[idx].name)
-                        util.plt.hist(grad, title = title , normed = True, 
-                                      show = False, save = True, save_path = '~/temp/training_grad/%f'%(self.learning_rate), bin_count = 100)
-                        
+                    weights = model.get_weight_values()
+                    for w in weights:
+                        if util.np.has_nan_or_infty(w):
+                            util.io.dump('~/temp/debug/weights.pkl', weights)
+                            
+#                     values = debug_fn(data_X, data_y);
+                    values = debug_fn(data_X);
+                    for v in values:
+                        if util.np.has_nan_or_infty(v):
+#                             util.io.dump('~/temp/debug/sensitivities.pkl', values)
+#                             util.io.dump('~/temp/debug/grads.pkl', self.update_value)
+                            util.io.dump('~/temp/debug/output.pkl', values)
+                            raise ValueError
                 logging.debug('forwarding and then backpropogating...')
                 if self.catch_memory_error:
                     try:
@@ -150,9 +160,7 @@ class Solver(object):
                         continue
                 else:
                     training_loss, training_accuracy, output = training_fn(data_X, data_y)
-                    
 
-                    
 #                 s = debug_fn(data_X)
 #                 util.io.dump('~/temp/no-use/loss.pkl', [output, data_y])
                 training_accuracies.append(training_accuracy)
@@ -193,7 +201,7 @@ class Solver(object):
                 logging.info("Total Iteration %d, validation result: loss = %f, accuracy = %f"%(self.iterations, val_losses[-1], val_accuracies[-1]))
 
             # dump data and model
-            if (self.iterations) % self.dump_interval == 0:
+            if (self.iterations + 1) % self.dump_interval == 0:
                 self.training_losses = training_losses
                 self.training_accuracies = training_accuracies
                 self.val_losses = val_losses
