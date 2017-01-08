@@ -35,8 +35,10 @@ def cross_entropy_on_log_softmax_result(log_p, target):
     4d operation:[batch_size, channels, height, width]
     """
     dot = log_p * target;
-    dot_2d = dot.reshape((dot.shape[0], -1))
-    loss =  - T.mean(T.sum(dot_2d, axis = 1))
+    shape = dot.shape
+#     dot_2d = dot.reshape((dot.shape[0], -1))
+#     loss =  - T.mean(T.sum(dot_2d, axis = 1))
+    loss = - T.sum(dot) / (shape[0]*shape[2] * shape[-1])
     return loss
     
 def cross_entropy(p, target):

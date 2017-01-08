@@ -6,7 +6,7 @@ import time
 import theano
 import numpy as np
 import theano.tensor as T
-from theano.compile.nanguardmode import NanGuardMode
+# from theano.compile.nanguardmode import NanGuardMode
 
 import util
 dtype = util.dtype
