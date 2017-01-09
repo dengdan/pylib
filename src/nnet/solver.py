@@ -206,7 +206,6 @@ class Solver(object):
                 self.training_accuracies = training_accuracies
                 self.val_losses = val_losses
                 self.val_accuracies = val_accuracies
-                
                 # the two iterators and the update_value won't be dumped
                 self.train_iter = None
                 self.val_iter = None

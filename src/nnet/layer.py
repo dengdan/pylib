@@ -18,7 +18,7 @@ from util.dtype import floatX
 
 
 class Layer(object):
-    def __init__(self, input, name, activation = None):
+    def __init__(self, input, name, activation = None, update = True):
         self.params = []
         self.name = name
         if activation is None:
@@ -28,6 +28,7 @@ class Layer(object):
             self.pre = input
             input = input.output
         self.input = input
+        self.update = update
         
     def get_updates(self, loss, lr):
         return [(p, p - lr * T.grad(loss, p)) for p in self.params]
