@@ -43,7 +43,7 @@ class Model(object):
             param_count += T.prod(p.shape)
         self.param_count = param_count
         
-    def init_params(self, path):   
+    def init_params(self, path, mx = True):   
         params = util.io.load(path)
         for layer_name in self.layers:
             layer = self.layers[layer_name]
@@ -52,8 +52,12 @@ class Model(object):
             bias_key = key_pattern%('bias')
             if weight_key in params:
                 logging.info('initializing weights and bias of layer %s'%(layer.name))
-                w = np.asarray(params[weight_key].asnumpy(), dtype = np.float32)
-                b = np.asarray(params[bias_key].asnumpy(), dtype =  np.float32)
+                if mx:
+                    w = np.asarray(params[weight_key].asnumpy(), dtype = np.float32)
+                    b = np.asarray(params[bias_key].asnumpy(), dtype =  np.float32)
+                else:
+                    w = np.asarray(params[weight_key], dtype = np.float32)
+                    b = np.asarray(params[bias_key], dtype =  np.float32)
                 layer.W.set_value(w)
                 layer.b.set_value(b)
          
