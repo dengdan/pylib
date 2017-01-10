@@ -29,7 +29,6 @@ class Layer(object):
             input = input.output
         self.input = input
         self.update = update
-        
     def get_updates(self, loss, lr):
         return [(p, p - lr * T.grad(loss, p)) for p in self.params]
     
@@ -61,9 +60,9 @@ class ConvolutionLayer(Layer):
         mu, sigma = 0, np.sqrt(2.0/np.prod(filter_shape[1:]))
         W_value = rng.normal(mu, sigma, size = filter_shape)
         W_value = np.asarray(W_value, dtype = floatX)
-        self.W = theano.shared(value = W_value, borrow = True)
+        self.W = theano.shared(value = W_value, borrow = True, name = self.name + '_weight')
         b_value = np.zeros((filter_shape[0], ), dtype = floatX)
-        self.b = theano.shared(value = b_value, borrow = True)
+        self.b = theano.shared(value = b_value, borrow = True, name = self.name + '_bias')
         
         self.lin_output = T.nnet.conv2d(input = self.input, 
                                     filters = self.W, 
@@ -92,12 +91,26 @@ class SoftmaxOutputLayerWithLoss(FullyConnectedLayer):
         self.ce = ce
         self.loss = - T.mean(ce)
 
+# make a bilinear interpolation kernel, return a numpy.ndarray
+def upsample_filt(size):
+    factor = (size + 1) // 2
+    if size % 2 == 1:
+        center = factor - 1.0
+    else:
+        center = factor - 0.5
+    og = np.ogrid[:size, :size]
+    return (1 - abs(og[0] - center) / factor) * \
+           (1 - abs(og[1] - center) / factor)
+
+
+
 class DeconvolutionLayer(Layer):
     def __init__(self, input, filter_shape, stride, padding = (0, 0), name = 'deconv' ):
         Layer.__init__(self, input, name, activation = None)
-        W_value = util.rand.normal(filter_shape)
-        W_value = np.asarray(W_value, dtype = util.dtype.floatX)
-        self.W = theano.shared(value = W_value, borrow = True)
+        W_value = np.zeros(filter_shape, dtype = util.dtype.floatX)
+        filter = upsample_filt(filter_shape[2])
+        W_value[range(filter_shape[0]), range(filter_shape[1]), :, :] = filter
+        self.W = theano.shared(value = W_value, borrow = True, name = self.name + '_weight')
         
         s1, s2 = stride;
         p1, p2 = padding;
@@ -108,5 +121,5 @@ class DeconvolutionLayer(Layer):
         self.output_shape = output_shape
         self.output = T.nnet.abstract_conv.conv2d_grad_wrt_inputs(output_grad = self.input, input_shape = output_shape, filters = self.W, filter_shape = filter_shape, border_mode= padding, subsample= stride)
         self.lin_output = self.output
-        self.params = [self.W]
+#         self.params = [self.W]
 

@@ -30,6 +30,8 @@ class Model(object):
             self.params.extend(l.params)
             if l.update:
                 logging.info('layer %s is going to be trained.'%l.name)
+                for p in l.params:
+                    logging.info('\t\t %s', p.name)
                 self.params_to_be_updated.extend(l.params)
             else:
                 logging.info('layer %s is not going to be trained.'%l.name)
