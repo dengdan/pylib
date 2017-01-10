@@ -25,14 +25,17 @@ class Model(object):
         make sure it is called before or at the end of initialization
         """
         self.params_to_be_updated = []
+        self.lr_mul = []
         self.params = []
-        for l in self.layers:
+        for layer_name in self.layers:
+            l = self.layers[layer_name]
             self.params.extend(l.params)
-            if l.update:
-                logging.info('layer %s is going to be trained.'%l.name)
+            if l.lr_mul > 0:
+                logging.info('layer %s is going to be trained, lr_mul = %f.'%(l.name, l.lr_mul))
                 for p in l.params:
                     logging.info('\t\t %s', p.name)
                 self.params_to_be_updated.extend(l.params)
+                self.lr_mul.extend([l.lr_mul] * len(l.params))
             else:
                 logging.info('layer %s is not going to be trained.'%l.name)
         param_count = 0
@@ -40,19 +43,10 @@ class Model(object):
             param_count += T.prod(p.shape)
         self.param_count = param_count
         
-    def touch_static_layers(self, count = 0):
-         i = 0;
-         if len(self.static_layers) == 0:
-             logging.info('No static layers now.')
-             return
-         while i < count and len(self.static_layers):
-             layer = self.static_layers.pop()
-             layer.update = True
-         self.touch_params()
-         
     def init_params(self, path):   
         params = util.io.load(path)
-        for layer in self.layers:
+        for layer_name in self.layers:
+            layer = self.layers[layer_name]
             key_pattern = layer.name + '_%s'
             weight_key = key_pattern%('weight')
             bias_key = key_pattern%('bias')

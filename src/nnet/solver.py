@@ -318,10 +318,11 @@ class MomentumGradientDescentSolver(SimpleGradientDescentSolver):
         
     def get_updates(self, model):
         params = model.params_to_be_updated
+        lr_mul = np.asarray(model.lr_mul, dtype = util.dtype.floatX)
         if self.update_value is None:
             self.update_value = [p * 0 for p in params]
         
-        self.update_value = [self.momentum * v - self.decay * self.learning_rate * p - self.learning_rate * T.grad(model.loss, p) for (p, v) in zip(params, self.update_value)]
+        self.update_value = [self.momentum * v - self.decay * self.learning_rate* lm * p - self.learning_rate* lm * T.grad(model.loss, p) for (p, v, lm) in zip(params, self.update_value, lr_mul)]
         updates = [(p, p + v) for (p, v) in zip(params, self.update_value)]
         return updates
 

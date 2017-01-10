@@ -18,7 +18,7 @@ from util.dtype import floatX
 
 
 class Layer(object):
-    def __init__(self, input, name, activation = None, update = True):
+    def __init__(self, input, name, activation = None, lr_mul = 1.0):
         self.params = []
         self.name = name
         if activation is None:
@@ -28,9 +28,10 @@ class Layer(object):
             self.pre = input
             input = input.output
         self.input = input
-        self.update = update
+        self.lr_mul = lr_mul
+        
     def get_updates(self, loss, lr):
-        return [(p, p - lr * T.grad(loss, p)) for p in self.params]
+        return [(p, p - self.lr_mul * lr * T.grad(loss, p)) for p in self.params]
     
 
 class FullyConnectedLayer(Layer):
@@ -106,7 +107,7 @@ def upsample_filt(size):
 
 class DeconvolutionLayer(Layer):
     def __init__(self, input, filter_shape, stride, padding = (0, 0), name = 'deconv' ):
-        Layer.__init__(self, input, name, activation = None)
+        Layer.__init__(self, input, name, activation = None, lr_mul = 0)
         W_value = np.zeros(filter_shape, dtype = util.dtype.floatX)
         filter = upsample_filt(filter_shape[2])
         W_value[range(filter_shape[0]), range(filter_shape[1]), :, :] = filter
