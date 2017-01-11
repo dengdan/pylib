@@ -10,3 +10,7 @@ def get_pool(processes):
 def wait_for_pool(pool):
     pool.close()
     pool.join()  
+
+def set_proc_name(name):
+    import setproctitle
+    setproctitle.setproctitle(name)
