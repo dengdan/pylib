@@ -15,7 +15,7 @@ def get_date_str():
 
 def init_logger(log_file = None, log_path = None, log_level = logging.DEBUG, mode = 'w'):
     """
-    log_path: 日志文件的完整路径
+    log_path: 日志文件的文件夹路径
     do_print: 是否打印到控制台
     mode: 'a', append; 'w', 覆盖原文件写入.
     """

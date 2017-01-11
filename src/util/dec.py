@@ -8,7 +8,8 @@ def print_calling(fn):
         start = time.time()
         ret = fn(*args1, **args2)
         end = time.time()
-        s = "%s. time used = %f seconds"%(s, (end - start))
+#         s = "%s. time used = %f seconds"%(s, (end - start))
+        s = "function [%s] has been called, taking %f seconds"%(fn.__name__, (end - start))
         logging.debug(s)
         return ret
     return wrapper
