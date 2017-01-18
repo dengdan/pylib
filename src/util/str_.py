@@ -3,6 +3,14 @@ def int_array_to_str(arr):
     """turn an int array to a str"""
     return "".join(map(chr, arr))
 
+def join(arr, splitter=','):
+    temp = []
+    for e in arr:
+        temp.append(e)
+        temp.append(splitter)
+    temp.pop()
+    return "".join(temp)
+
 def is_str(s):
     return type(s) == str
 
@@ -49,3 +57,6 @@ def replace_all(s, old, new):
     
 def remove_all(s, sub):
     return replace_all(s, sub, '')
+    
+def split(s, splitter):
+    return s.split(splitter)
