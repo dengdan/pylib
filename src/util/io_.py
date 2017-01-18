@@ -93,6 +93,7 @@ def read_lines(p):
     
 def write_lines(p, lines):
     p = get_absolute_path(p)
+    make_parent_dir(p)
     with open(p, 'w') as f:
         for line in lines:
             f.write(line)
