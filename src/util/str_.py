@@ -60,3 +60,9 @@ def remove_all(s, sub):
     
 def split(s, splitter):
     return s.split(splitter)
+    
+def remove_invisible(s):
+    s = replace_all(s, ' ', '')
+    s = replace_all(s, '\n', '')
+    s = replace_all(s, '\t', '')
+    return s

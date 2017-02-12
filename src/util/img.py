@@ -35,8 +35,8 @@ def imread(path, rgb = False, mode = cv2.IMREAD_COLOR):
     return img
 
 def imshow(winname, img, block = True, position = None, maximized = False, rgb = False):
-    if not isinstance(img, np.ndarray):
-        img = imread(path = img, mode = mode)
+    if isinstance(img, str):
+        img = imread(path = img)
     
     cv2.namedWindow(winname, cv2.WINDOW_NORMAL)
     if rgb:

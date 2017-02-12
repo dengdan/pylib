@@ -141,6 +141,7 @@ def create_h5(path):
     path = get_absolute_path(path)
     make_parent_dir(path)
     return h5py.File(path, 'w');
+
 def open_h5(path, mode = 'r'):
     import h5py
     path = get_absolute_path(path)
