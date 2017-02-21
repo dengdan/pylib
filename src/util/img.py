@@ -30,6 +30,7 @@ def imread(path, rgb = False, mode = cv2.IMREAD_COLOR):
     img = cv2.imread(path, mode)
     if img is None:
         raise IOError('File not found:%s'%(path))
+        
     if rgb:
         img = bgr2rgb(img)
     return img

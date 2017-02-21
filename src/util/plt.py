@@ -102,7 +102,7 @@ def imshow(title = None, img = None, gray = False):
 def show_images(images, titles = None, shape = None, share_axis = False, 
                 bgr2rgb = False, maximized = False, 
                 show = True, gray = False, save = False, 
-                path = None, axis_off = False, vertical = False):
+                path = None, axis_off = False, vertical = False, subtitle = None):
         
     if shape == None:
         if vertical:
@@ -135,6 +135,9 @@ def show_images(images, titles = None, shape = None, share_axis = False,
             plt.axis('off')
 #             plt.xticks([]), plt.yticks([])
         ret_axes.append(ax)
+        
+    if subtitle is not None:
+        set_subtitle(subtitle)
     if maximized:
         maximize_figure()
         
@@ -154,6 +157,8 @@ def save_image(path, img = None, dpi = 150):
     else:
         plt.imsave(path, img)
 
+imwrite = save_image
+    
 def to_ROI(ax, ROI):
     xy1, xy2 = ROI
     xmin, ymin = xy1
@@ -173,4 +178,11 @@ def show(maximized = False):
 def draw():
     plt.gcf().canvas.draw()
 
-
+def get_random_line_style():
+    colors = ['r', 'g', 'b', 'k']
+    line_types = ['-', '--', '-.', '.', ':']
+    idx = util.rand.randint(len(colors))
+    color = colors[idx]
+    idx = util.rand.randint(len(line_type))
+    line_type = line_types[idx]
+    return color + line_type
