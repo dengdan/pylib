@@ -161,3 +161,4 @@ def has_nan_or_infty(x):
         
 def iterable(x):
     return np.iterable(x)
+    

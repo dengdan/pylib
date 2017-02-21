@@ -67,3 +67,7 @@ def remove_invisible(s):
     s = replace_all(s, '\t', '')
     s = replace_all(s, '\r', '')
     return s
+    
+def find_all(s, pattern):
+    import re
+    return re.findall(pattern, s)
