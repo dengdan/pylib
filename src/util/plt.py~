@@ -179,7 +179,7 @@ def draw():
     plt.gcf().canvas.draw()
 
 def get_random_line_style():
-    colors = ['r', 'g', 'b']
+    colors = ['r', 'g', 'b', 'k']
     line_types = ['-']#, '--', '-.', ':']
     idx = util.rand.randint(len(colors))
     color = colors[idx]

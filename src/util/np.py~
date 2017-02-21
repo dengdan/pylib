@@ -165,7 +165,7 @@ def iterable(x):
 def smooth(arr):
     result = [0] * len(arr)
     s = 0
-    for idx, n in enumerate(arr):
+    for idx, n in arr:
         s += n
         result[idx] = s * 1.0 / (idx + 1)
     return result

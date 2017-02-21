@@ -62,7 +62,6 @@ def split(s, splitter):
 #    return s.split(splitter)
     import re
     return re.split(splitter, s)   
-    
 def remove_invisible(s):
     s = replace_all(s, ' ', '')
     s = replace_all(s, '\n', '')

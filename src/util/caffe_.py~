@@ -56,6 +56,8 @@ def draw_log(log_path, output_names, show = False, save_path = None, from_to = N
         start = 0
         end = len(output)
         
+        import pdb
+        pdb.set_trace()
         if from_to is not None:
             start = from_to[0]
             end = from_to[1]        
