@@ -65,4 +65,5 @@ def remove_invisible(s):
     s = replace_all(s, ' ', '')
     s = replace_all(s, '\n', '')
     s = replace_all(s, '\t', '')
+    s = replace_all(s, '\r', '')
     return s
