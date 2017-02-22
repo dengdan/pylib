@@ -24,3 +24,9 @@ def exit(code = 0):
     
 is_main = mod.is_main
 init_logger = log.init_logger
+
+def sit(img = None, path = None):
+    if path is None:
+        path = '~/temp/no-use/' + log.get_date_str() + '.jpg'
+        
+    plt.imwrite(path, img)

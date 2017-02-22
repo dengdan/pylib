@@ -318,6 +318,7 @@ def blur(img, blur_type):
     return fn(img)
     
 def put_text(img, text, pos, scale = 1, color = COLOR_WHITE, thickness = 1):
+    pos = np.int32(pos)
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.putText(img = img, text = text, org = tuple(pos), fontFace = font,  fontScale = scale,  color = color, thickness = thickness)
 
