@@ -58,8 +58,9 @@ def replace_all(s, old, new):
 def remove_all(s, sub):
     return replace_all(s, sub, '')
     
-def split(s, splitter):
-#    return s.split(splitter)
+def split(s, splitter, reg = False):
+    if not reg:
+        return s.split(splitter)
     import re
     return re.split(splitter, s)   
     
