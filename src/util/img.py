@@ -57,7 +57,9 @@ def imshow(winname, img, block = True, position = None, maximized = False, rgb =
         cv2.destroyAllWindows()
 
 
-def imwrite(path, img):
+def imwrite(path, img, rgb = False):
+    if rgb:
+        img = rgb2bgr(img)
     path = util.io.get_absolute_path(path)
     util.io.make_parent_dir(path)
     cv2.imwrite(path, img)
@@ -322,16 +324,17 @@ def put_text(img, text, pos, scale = 1, color = COLOR_WHITE, thickness = 1):
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.putText(img = img, text = text, org = tuple(pos), fontFace = font,  fontScale = scale,  color = color, thickness = thickness)
 
-def resize(img, f = None, fx = None, fy = None, size = None):
+def resize(img, f = None, fx = None, fy = None, size = None, interpolation = cv2.INTER_LINEAR):
+
     h, w = get_shape(img)
     if fx != None and fy != None:
-        return cv2.resize(img, None, fx = fx, fy = fy)
+        return cv2.resize(img, None, fx = fx, fy = fy, interpolation = interpolation)
         
     if size != None:
         size = tuple(util.dtype.int(size))
-        return cv2.resize(img, size)
+        return cv2.resize(img, size, interpolation = interpolation)
     
-    return cv2.resize(img, None, fx = f, fy = f)
+    return cv2.resize(img, None, fx = f, fy = f, interpolation = interpolation)
 
 def translate(img, delta_x, delta_y, size = None):
     M = np.float32([[1,0, delta_x],[0,1, delta_y]])
