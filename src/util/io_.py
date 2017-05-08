@@ -61,7 +61,7 @@ def get_filename(path):
 def get_absolute_path(p):
     if p.startswith('~'):
         p = os.path.expanduser(p)
-    return os.path.abspath(p) + '/'
+    return os.path.abspath(p)
 
 def cd(p):
     p = get_absolute_path(p)
