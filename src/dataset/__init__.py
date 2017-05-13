@@ -1,2 +1,0 @@
-import evaluate
-import icdar
