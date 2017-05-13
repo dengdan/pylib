@@ -1,3 +1,3 @@
 git add . --all
-git commit -m 'a lot of modifications'
+git commit -m 'add util/cmd.py'
 git push origin

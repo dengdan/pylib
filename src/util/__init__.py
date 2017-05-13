@@ -2,8 +2,8 @@ import log
 import dtype
 import plt
 import np
-#import img
-#_img = img
+import img
+_img = img
 import dec
 import rand
 import mod
@@ -18,6 +18,7 @@ import feature
 import thread_ as thread
 import caffe_ as caffe
 import tf
+import cmd
 # log.init_logger('~/temp/log/log_' + get_date_str() + '.log')
 
 def exit(code = 0):
