@@ -48,6 +48,15 @@ def load(path):
 def join_path(a, *p):
     return os.path.join(a, *p)
 
+def is_dir(path):
+    path = get_absolute_path(path)
+    return os.path.isdir(path)
+
+
+def is_path(path):
+    path = get_absolute_path(path)
+    return os.path.ispath(path)
+    
 def get_dir(path):
     '''
     return the directory it belongs to

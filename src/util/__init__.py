@@ -19,10 +19,11 @@ import thread_ as thread
 import caffe_ as caffe
 import tf
 import cmd
+import ml
+import sys
 # log.init_logger('~/temp/log/log_' + get_date_str() + '.log')
 
 def exit(code = 0):
-    import sys
     sys.exit(0)
     
 is_main = mod.is_main
@@ -52,3 +53,5 @@ def cit(img, path = None, rgb = True, name = ""):
         path = '~/temp_nfs/no-use/%s_%d_%s.jpg'%(log.get_date_str(), _count, name)
         _img.imwrite(path, img, rgb = rgb)
 
+def argv(index):
+    return sys.argv[index]
