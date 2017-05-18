@@ -23,7 +23,8 @@ def init_logger(log_file = None, log_path = None, log_level = logging.DEBUG, mod
     if log_path is None:
         log_path = '~/temp/log/' 
     if log_file is None:
-        log_file = util.io.join_path(log_path, 'log_' + get_date_str() + '.log')
+        log_file = 'log_' + get_date_str() + '.log'
+    log_file = util.io.join_path(log_path, log_file)
     # 此处不能使用logging输出
     print('log file path:' + log_file);
     util.io.make_parent_dir(log_file)
