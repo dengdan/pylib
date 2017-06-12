@@ -142,10 +142,13 @@ def get_roi(img, p1, p2):
     return img[y_min: y_max, x_min: x_max]
     
 def rectangle(img, left_up, right_bottom, color, border_width = 1):
+    left_up = (int(left_up[0]), int(left_up[1]))
+    right_bottom = (int(right_bottom[0]), int(right_bottom[1]))
     cv2.rectangle(img, left_up, right_bottom, color, border_width)
 
 
 def circle(img, center, r, color, border_width = 1):
+    center = (int(center[0]), int(center[1]))
     cv2.circle(img, center, r, color, border_width)
 
 def render_points(img, points, color):
@@ -434,3 +437,9 @@ def random_color_3():
 
 def get_contour_area(cnt):
     return cv2.contourArea(cnt)
+    
+def is_valid_jpg(jpg_file):
+    with open(jpg_file, 'rb') as f:     
+        f.seek(-2, 2)
+        return f.read() == '\xff\xd9'
+

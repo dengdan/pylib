@@ -44,3 +44,25 @@ def get_available_gpus():
     local_device_protos = _device_lib.list_local_devices()
     return [x.name for x in local_device_protos if x.device_type == 'GPU']
 
+
+def get_latest_ckpt(path):
+# tf.train.latest_checkpoint
+    import util
+    path = util.io.get_absolute_path(path)
+    if util.io.is_dir(path):
+        ckpt = tf.train.get_checkpoint_state(path)
+        ckpt_path = ckpt.model_checkpoint_path
+    else:
+        ckpt_path = path; 
+    return ckpt_path
+    
+def get_all_ckpts(path):
+    ckpt = tf.train.get_checkpoint_state(path)
+    all_ckpts = ckpt.all_model_checkpoint_paths
+    ckpts = [str(c) for c in all_ckpts]
+    return ckpts
+
+def get_iter(ckpt):
+    import util
+    iter_ = int(util.str.find_all(ckpt, '.ckpt-\d+')[0].split('-')[-1])
+    return iter_

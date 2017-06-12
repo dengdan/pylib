@@ -16,7 +16,6 @@ def get_date_str():
 def init_logger(log_file = None, log_path = None, log_level = logging.DEBUG, mode = 'w'):
     """
     log_path: 日志文件的文件夹路径
-    do_print: 是否打印到控制台
     mode: 'a', append; 'w', 覆盖原文件写入.
     """
     fmt = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s: %(message)s'
@@ -34,6 +33,12 @@ def init_logger(log_file = None, log_path = None, log_level = logging.DEBUG, mod
                 filemode=mode)
     
     console = logging.StreamHandler(stream = sys.stdout)
+    console.setLevel(log_level)
+    formatter = logging.Formatter(fmt)
+    console.setFormatter(formatter)
+    logging.getLogger('').addHandler(console)
+
+    console = logging.StreamHandler(stream = sys.stderr)
     console.setLevel(log_level)
     formatter = logging.Formatter(fmt)
     console.setFormatter(formatter)
