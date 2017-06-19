@@ -32,13 +32,14 @@ init_logger = log.init_logger
 def sit(img, path = None, name = ""):
     if path is None:
         _count = get_count();
-        path = '~/temp_nfs/no-use/%s_%d_%s.jpg'%(log.get_date_str(), _count, name)
+        path = '~/temp/no-use/%s_%d_%s.jpg'%(log.get_date_str(), _count, name)
       
     if type(img) == list:
         plt.show_images(images = img, path = path, show = False, axis_off = True, save = True)
     else:
         plt.imwrite(path, img)
-
+    
+    return path
 _count = 0;
 
 def get_count():
@@ -50,8 +51,9 @@ def cit(img, path = None, rgb = True, name = ""):
     _count = get_count();
     if path is None:
         img = np.np.asarray(img, dtype = np.np.uint8)
-        path = '~/temp_nfs/no-use/%s_%d_%s.jpg'%(log.get_date_str(), _count, name)
+        path = '~/temp/no-use/%s_%d_%s.jpg'%(log.get_date_str(), _count, name)
         _img.imwrite(path, img, rgb = rgb)
+    return path        
 
 def argv(index):
     return sys.argv[index]

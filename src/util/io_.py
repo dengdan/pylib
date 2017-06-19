@@ -94,6 +94,10 @@ def ls(path = '.', suffix = None):
     
     return filtered
 
+def find_files(pattern):
+    import glob
+    return glob.glob(pattern)
+
 def read_lines(p):
     """return the text in a file in lines as a list """
     p = get_absolute_path(p)

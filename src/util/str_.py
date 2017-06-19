@@ -52,8 +52,15 @@ def contains(s, target, ignore_case = False):
         target = to_lowercase(target)
     return s.find(target) >= 0
     
-def replace_all(s, old, new):
-    return s.replace(old, new)
+def replace_all(s, old, new, reg = False):
+    if reg:
+        import re
+        targets = re.findall(old, s)
+        for t in targets:
+            s = s.replace(t, new)
+    else:
+        s = s.replace(old, new)
+    return s
     
 def remove_all(s, sub):
     return replace_all(s, sub, '')

@@ -38,3 +38,9 @@ def init_logger(log_file = None, log_path = None, log_level = logging.DEBUG, mod
     console.setFormatter(formatter)
     logging.getLogger('').addHandler(console)
 
+    console = logging.StreamHandler(stream = sys.stderr)
+    console.setLevel(log_level)
+    formatter = logging.Formatter(fmt)
+    console.setFormatter(formatter)
+    logging.getLogger('').addHandler(console)
+
