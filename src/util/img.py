@@ -22,9 +22,16 @@ COLOR_GREEN = (0, 255, 0)
 COLOR_RGB_RED = (255, 0, 0)
 COLOR_BGR_RED = (0, 0, 255)
 
+COLOR_RGB_BLUE = (0, 0, 255)
+COLOR_BGR_BLUE = (255, 0, 0)
+
+COLOR_RGB_YELLOW = (255, 255, 0)
 COLOR_BGR_YELLOW = (0, 255, 255)
-COLOR_BGR_RED = (0, 0, 255)
-    
+
+
+COLOR_RGB_GRAY = (47, 79, 79)
+
+COLOR_RGB_PINK = (255, 192, 203)
 def imread(path, rgb = False, mode = cv2.IMREAD_COLOR):
     path = util.io.get_absolute_path(path)
     img = cv2.imread(path, mode)
@@ -88,6 +95,7 @@ def is_white(color):
 def black(shape):
     if len(np.shape(shape)) >= 2:
         shape = get_shape(shape)
+    shape = [int(v) for v in shape]
     return np.zeros(shape, np.uint8)
     
 def white(shape, value = 255):
@@ -425,6 +433,18 @@ def find_two_level_contours(mask):
     mask = mask.copy()
     contours, tree = cv2.findContours(mask, mode = cv2.RETR_CCOMP, method = cv2.CHAIN_APPROX_NONE)
     return contours, tree
+    
+    
+def is_in_contour(point, cnt):
+    """tell whether a point is in contour or not. In-contour here includes both the 'in contour' and 'on contour' cases.
+       point:(x, y)
+       cnt: a cv2 contour
+    """
+    
+    # doc of pointPolygonTest: http://docs.opencv.org/2.4/modules/imgproc/doc/structural_analysis_and_shape_descriptors.html?highlight=pointpolygontest#cv.PointPolygonTest
+    # the last argument means only tell if in or not, without calculating the shortest distance
+    in_cnt = cv2.pointPolygonTest(cnt, point, False)
+    return in_cnt >= 0;
 
 def convex_hull(contour):
     hull = cv2.convexHull(contour, returnPoints=1)
@@ -442,4 +462,5 @@ def is_valid_jpg(jpg_file):
     with open(jpg_file, 'rb') as f:     
         f.seek(-2, 2)
         return f.read() == '\xff\xd9'
+
 
