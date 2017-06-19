@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import util
         
-def hist(x, title, normed = False, show = True, save = False, save_path = None, bin_count = 100, bins = None):    
+def hist(x, title = None, normed = False, show = True, save = False, save_path = None, bin_count = 100, bins = None):    
     x = np.asarray(x)
     if len(np.shape(x)) > 1:
 #         x = np.reshape(x, np.prod(x.shape))
