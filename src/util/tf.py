@@ -60,29 +60,35 @@ def get_iter(ckpt):
     iter_ = int(util.str.find_all(ckpt, '.ckpt-\d+')[0].split('-')[-1])
     return iter_
 
-def get_init_fn(flags):
+def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False, checkpoint_exclude_scopes = None, model_name = None, checkpoint_model_scope = None):
     """
     code from github/SSD-tensorflow/tf_utils.py
     Returns a function run by the chief worker to warm-start the training.
     Note that the init_fn is only run when initializing the model during the very
     first global step.
 
+    checkpoint_path: the checkpoint to be restored
+    train_dir: the directory where checkpoints are stored during training.
+    ignore_missing_vars: if False and there are variables in the model but not in the checkpoint, an error will be raised.
+    checkpoint_model_scope and model_name: if the root scope of checkpoints and the model in session is different, 
+            (but the sub-scopes are all the same), specify them clearly 
+    checkpoint_exclude_scopes: variables to be excluded when restoring from checkpoint_path.
     Returns:
       An init function run by the supervisor.
     """
-    if flags.checkpoint_path is None:
+    if checkpoint_path is None:
         return None
     # Warn the user if a checkpoint exists in the train_dir. Then ignore.
-    if tf.train.latest_checkpoint(flags.train_dir):
+    if tf.train.latest_checkpoint(train_dir):
         tf.logging.info(
             'Ignoring --checkpoint_path because a checkpoint already exists in %s'
-            % flags.train_dir)
+            % train_dir)
         return None
 
     exclusions = []
-    if flags.checkpoint_exclude_scopes:
+    if checkpoint_exclude_scopes:
         exclusions = [scope.strip()
-                      for scope in flags.checkpoint_exclude_scopes.split(',')]
+                      for scope in checkpoint_exclude_scopes.split(',')]
 
     # TODO(sguada) variables.filter_variables()
     variables_to_restore = []
@@ -95,7 +101,7 @@ def get_init_fn(flags):
         if not excluded:
             variables_to_restore.append(var)
     # Change model scope if necessary.
-    if flags.checkpoint_model_scope is not None:
+    if checkpoint_model_scope is not None:
         variables_to_restore = {var.op.name.replace(flags.model_name, flags.checkpoint_model_scope): var for var in variables_to_restore}
 
     checkpoint_path = get_latest_ckpt(flags.checkpoint_path)
