@@ -21,7 +21,8 @@ def mkdir(path):
     path = get_absolute_path(path)
     if not exists(path):
         os.makedirs(path)
-        
+    return path
+    
 def make_parent_dir(path):
     """make the parent directories for a file."""
     parent_dir = get_dir(path)
