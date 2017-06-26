@@ -27,8 +27,13 @@ def is_number(obj):
 		obj + 1
 	except:
 		return False
-
 	return True
     
 def is_str(s):
     return type(s) == str
+
+def is_list(s):
+    return type(s) == list
+
+def is_tuple(s):
+    return type(s) == tuple
