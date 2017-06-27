@@ -60,9 +60,12 @@ def is_path(path):
     
 def get_dir(path):
     '''
-    return the directory it belongs to
+    return the directory it belongs to.
+    if path is a directory itself, itself will be return 
     '''
     path = get_absolute_path(path)
+    if is_dir(path):
+        return path;
     return os.path.split(path)[0]
 
 def get_filename(path):
