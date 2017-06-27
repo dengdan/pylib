@@ -60,7 +60,8 @@ def get_iter(ckpt):
     iter_ = int(util.str.find_all(ckpt, '.ckpt-\d+')[0].split('-')[-1])
     return iter_
 
-def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False, checkpoint_exclude_scopes = None, model_name = None, checkpoint_model_scope = None):
+def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False, 
+                checkpoint_exclude_scopes = None, model_name = None, checkpoint_model_scope = None):
     """
     code from github/SSD-tensorflow/tf_utils.py
     Returns a function run by the chief worker to warm-start the training.
@@ -102,15 +103,15 @@ def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False, checkpo
             variables_to_restore.append(var)
     # Change model scope if necessary.
     if checkpoint_model_scope is not None:
-        variables_to_restore = {var.op.name.replace(flags.model_name, flags.checkpoint_model_scope): var for var in variables_to_restore}
+        variables_to_restore = {var.op.name.replace(model_name, checkpoint_model_scope): var for var in variables_to_restore}
 
-    checkpoint_path = get_latest_ckpt(flags.checkpoint_path)
-    tf.logging.info('Fine-tuning from %s. Ignoring missing vars: %s' % (checkpoint_path, flags.ignore_missing_vars))
+    checkpoint_path = get_latest_ckpt(checkpoint_path)
+    tf.logging.info('Fine-tuning from %s. Ignoring missing vars: %s' % (checkpoint_path, ignore_missing_vars))
 
     return slim.assign_from_checkpoint_fn(
         checkpoint_path,
         variables_to_restore,
-        ignore_missing_vars=flags.ignore_missing_vars)
+        ignore_missing_vars=ignore_missing_vars)
 
 
 def get_variables_to_train(flags = None):
