@@ -166,7 +166,7 @@ def render_points(img, points, color):
 
     
 def draw_contours(img, contours, idx = -1, color = 1, border_width = 1):
-    img = img.copy()
+#     img = img.copy()
     cv2.drawContours(img, contours, idx, color, border_width)
     return img
 
