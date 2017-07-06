@@ -1,8 +1,10 @@
+from __future__ import print_function
+
 try:
     import tensorflow as tf
     slim = tf.contrib.slim
 except:
-    print "tensorflow is not installed, util.tf can not be used."
+    print("tensorflow is not installed, util.tf can not be used.")
     
 def is_gpu_available(cuda_only=True):
   """
@@ -131,3 +133,20 @@ def get_variables_to_train(flags = None):
         variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope)
         variables_to_train.extend(variables)
     return variables_to_train
+
+def Print(tensor, data, msg = '', file = None, mode = 'w'):
+    from tensorflow.python.ops import control_flow_ops
+    import util
+    def np_print(*args):
+        if util.str.contains(msg, '%'):
+            message = msg%tuple(args)
+        else:
+            message = msg + ' %'*len(args)%tuple(args)
+        if file is not None:
+            file_path = util.io.get_absolute_path(file)
+            print('writting message to file(%s):'%(file_path), message)
+            with open(file_path, mode) as f:
+                print(message, file = f)
+        else:
+            print(message)
+    return control_flow_ops.with_dependencies([tf.py_func(np_print, data, [])], tensor)
