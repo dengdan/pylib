@@ -22,7 +22,7 @@ def mkdir(path):
     if not exists(path):
         os.makedirs(path)
     return path
-    
+
 def make_parent_dir(path):
     """make the parent directories for a file."""
     parent_dir = get_dir(path)
@@ -168,3 +168,14 @@ def read_h5(h5, key):
     return h5[key][:]
 def read_h5_attrs(h5, key, attrs):
     return h5[key].attrs[attrs]
+    
+def copy(src, dest):
+    import shutil
+    shutil.copy(get_absolute_path(src), get_absolute_path(dest))
+    
+cp = copy
+
+def remove(p):
+    import os
+    os.remove(get_absolute_path(p))
+rm = remove
