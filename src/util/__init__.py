@@ -32,7 +32,7 @@ init_logger = log.init_logger
 def sit(img, path = None, name = ""):
     if path is None:
         _count = get_count();
-        path = '~/temp/no-use/%s_%d_%s.jpg'%(log.get_date_str(), _count, name)
+        path = '~/temp/no-use/images/%s_%d_%s.jpg'%(log.get_date_str(), _count, name)
       
     if type(img) == list:
         plt.show_images(images = img, path = path, show = False, axis_off = True, save = True)
