@@ -374,7 +374,7 @@ def rotate_about_center(src, angle, scale=1.):
     # part of the transform
     rot_mat[0,2] += rot_move[0]
     rot_mat[1,2] += rot_move[1]
-    return cv2.warpAffine(src, rot_mat, (int(math.ceil(nw)), int(math.ceil(nh))), flags=cv2.INTER_LANCZOS4)
+    return cv2.warpAffine(src, rot_mat, (int(math.ceil(nw)), int(math.ceil(nh))), flags=cv2.INTER_LANCZOS4), rot_mat
 
 
 def get_rect_iou(rects1, rects2):
