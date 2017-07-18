@@ -51,7 +51,10 @@ def contains(s, target, ignore_case = False):
         s = to_lowercase(s)
         target = to_lowercase(target)
     return s.find(target) >= 0
-    
+
+def index_of(s, target):
+    return s.find(target)
+
 def replace_all(s, old, new, reg = False):
     if reg:
         import re

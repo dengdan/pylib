@@ -151,7 +151,7 @@ def Print(tensor, data, msg = '', file = None, mode = 'w'):
             print(message)
     return control_flow_ops.with_dependencies([tf.py_func(np_print, data, [])], tensor)
 
-def get_variable_names_in_checkpoint(path):
+def get_variable_names_in_checkpoint(path, return_shapes = False):
     """
     Args:
         path: the path to training directory containing checkpoints, 
@@ -163,4 +163,7 @@ def get_variable_names_in_checkpoint(path):
     ckpt = get_latest_ckpt(path)
     ckpt_reader = tf.train.NewCheckpointReader(ckpt)
     ckpt_vars = ckpt_reader.get_variable_to_shape_map()
-    return [var for var in ckpt_vars]
+    names = [var for var in ckpt_vars]
+    if return_shapes:
+        return names, ckpt_vars
+    return names
