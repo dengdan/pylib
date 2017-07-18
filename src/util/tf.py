@@ -79,7 +79,8 @@ def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False,
     Returns:
       An init function run by the supervisor.
     """
-    if checkpoint_path is None:
+    import util
+    if util.str.is_none_or_empty(checkpoint_path):
         return None
     # Warn the user if a checkpoint exists in the train_dir. Then ignore.
     if tf.train.latest_checkpoint(train_dir):
