@@ -427,21 +427,23 @@ def get_rect_iou(rects1, rects2):
 def find_contours(mask):
     mask = np.asarray(mask, dtype = np.uint8)
     mask = mask.copy()
-    contours, _ = cv2.findContours(mask, mode = cv2.RETR_CCOMP, method = cv2.CHAIN_APPROX_NONE)
+    contours, _ = cv2.findContours(mask, mode = cv2.RETR_CCOMP, 
+                                   method = cv2.CHAIN_APPROX_SIMPLE)
     return contours
 
 def find_two_level_contours(mask):
     mask = mask.copy()
-    contours, tree = cv2.findContours(mask, mode = cv2.RETR_CCOMP, method = cv2.CHAIN_APPROX_NONE)
+    contours, tree = cv2.findContours(mask, mode = cv2.RETR_CCOMP, 
+                                  method = cv2.CHAIN_APPROX_SIMPLE)
     return contours, tree
     
     
 def is_in_contour(point, cnt):
-    """tell whether a point is in contour or not. In-contour here includes both the 'in contour' and 'on contour' cases.
+    """tell whether a point is in contour or not. 
+            In-contour here includes both the 'in contour' and 'on contour' cases.
        point:(x, y)
        cnt: a cv2 contour
     """
-    
     # doc of pointPolygonTest: http://docs.opencv.org/2.4/modules/imgproc/doc/structural_analysis_and_shape_descriptors.html?highlight=pointpolygontest#cv.PointPolygonTest
     # the last argument means only tell if in or not, without calculating the shortest distance
     in_cnt = cv2.pointPolygonTest(cnt, point, False)
