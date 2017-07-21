@@ -337,13 +337,16 @@ def put_text(img, text, pos, scale = 1, color = COLOR_WHITE, thickness = 1):
     cv2.putText(img = img, text = text, org = tuple(pos), fontFace = font,  fontScale = scale,  color = color, thickness = thickness)
 
 def resize(img, f = None, fx = None, fy = None, size = None, interpolation = cv2.INTER_LINEAR):
-
+    """
+    size: (h, w)
+    """
     h, w = get_shape(img)
     if fx != None and fy != None:
         return cv2.resize(img, None, fx = fx, fy = fy, interpolation = interpolation)
         
     if size != None:
-        size = tuple(util.dtype.int(size))
+        size = util.dtype.int(size)
+        size = (size[1], size[0])
         return cv2.resize(img, size, interpolation = interpolation)
     
     return cv2.resize(img, None, fx = f, fy = f, interpolation = interpolation)
