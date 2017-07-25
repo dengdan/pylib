@@ -347,6 +347,7 @@ def resize(img, f = None, fx = None, fy = None, size = None, interpolation = cv2
     if size != None:
         size = util.dtype.int(size)
 #         size = (size[1], size[0])
+        size = tuple(size)
         return cv2.resize(img, size, interpolation = interpolation)
     
     return cv2.resize(img, None, fx = f, fy = f, interpolation = interpolation)
