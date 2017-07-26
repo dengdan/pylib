@@ -106,11 +106,12 @@ def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False,
             variables_to_restore.append(var)
     # Change model scope if necessary.
     if checkpoint_model_scope is not None:
-        variables_to_restore = {var.op.name.replace(model_name, checkpoint_model_scope): var for var in variables_to_restore}
-
+        variables_to_restore = {
+            var.op.name.replace(model_name, checkpoint_model_scope): var\
+                             for var in variables_to_restore}
+        tf.logging.info('variables_to_restore: %r'%(variables_to_restore))    
     checkpoint_path = get_latest_ckpt(checkpoint_path)
     tf.logging.info('Fine-tuning from %s. Ignoring missing vars: %s' % (checkpoint_path, ignore_missing_vars))
-
     return slim.assign_from_checkpoint_fn(
         checkpoint_path,
         variables_to_restore,
