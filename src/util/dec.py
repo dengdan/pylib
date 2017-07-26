@@ -37,6 +37,7 @@ def print_calling_in_short(fn):
 
 import collections
 counter = collections.defaultdict(int)
+count_times =collections.defaultdict(int)
 def print_calling_in_short_for_tf(fn):
     import tensorflow as tf
     import util
@@ -46,9 +47,11 @@ def print_calling_in_short_for_tf(fn):
         ret = fn(*args1, **args2)
         end = time.time()
         counter[fn.__name__] = counter[fn.__name__] + (end - start)
+        count_times[fn.__name__] += 1
         all_time = sum([counter[name] for name in counter]) * 1.0
         for name in counter:
-            tf.logging.info('\t %s: %f, %f seconds'%(name, counter[name] / all_time, counter[name]))
+#             tf.logging.info('\t %s: %f, %f seconds'%(name, counter[name] / all_time, counter[name]))
+            tf.logging.info('\t %s: %d callings, %fsper calling'%(name, count_times[name], counter[name] * 1.0 / count_times[name]))
         s = "Thread [%s]:function [%s] has been called, taking %f seconds"%(thread_name, fn.__name__, (end - start))
         tf.logging.info(s)
         return ret
