@@ -337,13 +337,17 @@ def put_text(img, text, pos, scale = 1, color = COLOR_WHITE, thickness = 1):
     cv2.putText(img = img, text = text, org = tuple(pos), fontFace = font,  fontScale = scale,  color = color, thickness = thickness)
 
 def resize(img, f = None, fx = None, fy = None, size = None, interpolation = cv2.INTER_LINEAR):
-
+    """
+    size: (w, h)
+    """
     h, w = get_shape(img)
     if fx != None and fy != None:
         return cv2.resize(img, None, fx = fx, fy = fy, interpolation = interpolation)
         
     if size != None:
-        size = tuple(util.dtype.int(size))
+        size = util.dtype.int(size)
+#         size = (size[1], size[0])
+        size = tuple(size)
         return cv2.resize(img, size, interpolation = interpolation)
     
     return cv2.resize(img, None, fx = f, fy = f, interpolation = interpolation)
@@ -427,21 +431,23 @@ def get_rect_iou(rects1, rects2):
 def find_contours(mask):
     mask = np.asarray(mask, dtype = np.uint8)
     mask = mask.copy()
-    contours, _ = cv2.findContours(mask, mode = cv2.RETR_CCOMP, method = cv2.CHAIN_APPROX_NONE)
+    contours, _ = cv2.findContours(mask, mode = cv2.RETR_CCOMP, 
+                                   method = cv2.CHAIN_APPROX_SIMPLE)
     return contours
 
 def find_two_level_contours(mask):
     mask = mask.copy()
-    contours, tree = cv2.findContours(mask, mode = cv2.RETR_CCOMP, method = cv2.CHAIN_APPROX_NONE)
+    contours, tree = cv2.findContours(mask, mode = cv2.RETR_CCOMP, 
+                                  method = cv2.CHAIN_APPROX_SIMPLE)
     return contours, tree
     
     
 def is_in_contour(point, cnt):
-    """tell whether a point is in contour or not. In-contour here includes both the 'in contour' and 'on contour' cases.
+    """tell whether a point is in contour or not. 
+            In-contour here includes both the 'in contour' and 'on contour' cases.
        point:(x, y)
        cnt: a cv2 contour
     """
-    
     # doc of pointPolygonTest: http://docs.opencv.org/2.4/modules/imgproc/doc/structural_analysis_and_shape_descriptors.html?highlight=pointpolygontest#cv.PointPolygonTest
     # the last argument means only tell if in or not, without calculating the shortest distance
     in_cnt = cv2.pointPolygonTest(cnt, point, False)
