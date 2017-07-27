@@ -20,9 +20,9 @@ def create_and_start(name, target, daemon = True):
 
   
 class ThreadPool(object):
-    def __init__(self, num_threads = 10):
+    def __init__(self, capacity = 10):
         import threadpool
-        self.num_threads = num_threads
+        self.num_threads = capacity
         self.pool = threadpool.ThreadPool(10)
         
     def add(self, fn, args):
@@ -38,3 +38,19 @@ class ThreadPool(object):
     
     def join(self):
         self.pool.wait()
+        
+class ProcessPool(object):
+    def __init__(self, capacity = 8):
+        from multiprocessing import Pool
+
+        self.capacity = capacity
+        self.pool = Pool(capacity)
+    
+    def add(self, fn, args):
+        self.pool.apply_async(fn, args)
+        
+    def join(self):
+        self.pool.close()
+        self.pool.join()
+        
+        
