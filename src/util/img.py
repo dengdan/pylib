@@ -471,3 +471,28 @@ def is_valid_jpg(jpg_file):
         return f.read() == '\xff\xd9'
 
 
+
+def rotate_point_by_90(x, y, k, w = 1.0, h = 1.0):
+    """
+    Rotate a point xy on an image by k * 90
+    degrees.
+    Params:
+        x, y: a point, (x, y). If not normalized within 0 and 1, the 
+            width and height of the image should be specified clearly.
+        w, h: the width and height of image
+        k: k * 90 degrees will be rotated
+    """
+    
+    assert type(k) == int, 'k must be an integer.'
+    k = k % 4
+    
+    if k == 0:
+        return x, y
+    elif k == 1:
+        return y, w - x
+    elif k == 2:
+        return w - x, h - y
+    elif k == 3:
+        return h - y, x
+    
+    
