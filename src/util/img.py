@@ -470,4 +470,3 @@ def is_valid_jpg(jpg_file):
         f.seek(-2, 2)
         return f.read() == '\xff\xd9'
 
-

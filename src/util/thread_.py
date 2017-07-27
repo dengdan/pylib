@@ -41,6 +41,9 @@ class ThreadPool(object):
         self.pool.wait()
         
 class ProcessPool(object):
+    """
+    Remember that function in function is not supported by multiprocessing.
+    """
     def __init__(self, capacity = 8):
         from multiprocessing import Pool
 
@@ -49,6 +52,8 @@ class ProcessPool(object):
     
     def add(self, fn, args):
         self.pool.apply_async(fn, args)
+#         self.pool.poll()
+#         self.pool.poll
         
     def join(self):
         self.pool.close()
