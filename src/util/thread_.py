@@ -35,6 +35,9 @@ class ThreadPool(object):
             raise ValueError, "Unsuported args,", type(args)
         request = threadpool.makeRequests(fn, args)[0]
         self.pool.putRequest(request, block = False)
+        self.pool.poll()
     
     def join(self):
         self.pool.wait()
+        
+        
