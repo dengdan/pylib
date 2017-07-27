@@ -46,7 +46,10 @@ def get_latest_ckpt(path):
     path = util.io.get_absolute_path(path)
     if util.io.is_dir(path):
         ckpt = tf.train.get_checkpoint_state(path)
-        ckpt_path = ckpt.model_checkpoint_path
+        if ckpt is not None:
+            ckpt_path = ckpt.model_checkpoint_path
+        else:
+            ckpt_path = None
     else:
         ckpt_path = path; 
     return ckpt_path
