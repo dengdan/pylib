@@ -17,3 +17,24 @@ def create_and_start(name, target, daemon = True):
     t.start()
     return t
 
+
+  
+class ThreadPool(object):
+    def __init__(self, num_threads = 10):
+        import threadpool
+        self.num_threads = num_threads
+        self.pool = threadpool.ThreadPool(10)
+        
+    def add(self, fn, args):
+        import threadpool
+        if type(args) == list:
+            args = [(args, None)]
+        elif type(args) == dict:
+            args = [(None, args)]
+        else:
+            raise ValueError, "Unsuported args,", type(args)
+        request = threadpool.makeRequests(fn, args)[0]
+        self.pool.putRequest(request, block = False)
+    
+    def join(self):
+        self.pool.wait()
