@@ -172,3 +172,11 @@ def get_variable_names_in_checkpoint(path, return_shapes = False):
     if return_shapes:
         return names, ckpt_vars
     return names
+
+
+
+def min_area_rect(xs, ys):
+    import util
+    rects = tf.py_func(util.img.min_area_rect, [xs, ys], xs.dtype)
+    rects.set_shape([None, 5])
+    return rects

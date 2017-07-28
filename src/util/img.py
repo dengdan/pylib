@@ -470,3 +470,52 @@ def is_valid_jpg(jpg_file):
         f.seek(-2, 2)
         return f.read() == '\xff\xd9'
 
+
+
+def rotate_point_by_90(x, y, k, w = 1.0, h = 1.0):
+    """
+    Rotate a point xy on an image by k * 90
+    degrees.
+    Params:
+        x, y: a point, (x, y). If not normalized within 0 and 1, the 
+            width and height of the image should be specified clearly.
+        w, h: the width and height of image
+        k: k * 90 degrees will be rotated
+    """
+    k = k % 4
+    
+    if k == 0:
+        return x, y
+    elif k == 1:
+        return y, w - x
+    elif k == 2:
+        return w - x, h - y
+    elif k == 3:
+        return h - y, x
+    
+    
+def min_area_rect(xs, ys):
+    """
+    Args:
+        xs: numpy ndarray with shape=(N,4). N is the number of oriented bboxes. 4 contains [x1, x2, x3, x4]
+        ys: numpy ndarray with shape=(N,4), [y1, y2, y3, y4]
+            Note that [(x1, y1), (x2, y2), (x3, y3), (x4, y4)] can represent an oriented bbox.
+    Return:
+        the oriented rects sorrounding the box, in the format:[cx, cy, w, h, theta]. 
+    """
+    xs = np.asarray(xs, dtype = np.float32)
+    ys = np.asarray(ys, dtype = np.float32)
+        
+    num_rects = xs.shape[0]
+    box = np.empty((num_rects, 5))#cx, cy, w, h, theta
+    for idx in xrange(num_rects):
+        points = zip(xs[idx, :], ys[idx, :])
+        cnt = points_to_contour(points)
+        rect = cv2.minAreaRect(cnt)
+        cx, cy = rect[0]
+        w, h = rect[1]
+        theta = rect[2]
+        box[idx, :] = [cx, cy, w, h, theta]
+    
+    box = np.asarray(box, dtype = xs.dtype)
+    return box
