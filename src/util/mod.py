@@ -41,4 +41,17 @@ def get_mod_by_name(mod_name):
     import sys
     return sys.modules[mod_name]
     
-
+def load_mod_from_path(path, keep_name = True):
+    """"
+    Params:
+        path
+        keep_name: if True, the filename will be used as module name.
+    """
+    import util
+    import imp
+    path = util.io.get_absolute_path(path)
+    file_name = util.io.get_filename(path)
+    module_name = file_name.split('.')[0]
+    if not keep_name:
+        module_name = '%s_%d'%(module_name, util.get_count())
+    return imp.load_source(module_name, path)
