@@ -179,3 +179,28 @@ def remove(p):
     import os
     os.remove(get_absolute_path(p))
 rm = remove
+
+def search(pattern, path, file_only = True):
+    """
+    Search files whose name matches the give pattern. The search scope
+    is the directory and sub-directories of 'path'. 
+    """
+    pattern_here = util.io.join_path(path, pattern)
+    targets = []
+    
+    # find matchings in current directory
+    candidates = find_files(pattern_here)
+    for can in candidates:
+        if util.io.is_dir(can) and file_only:
+            continue
+        else:
+            targets.append(can)
+            
+    # find matching in sub-dirs
+    files = ls(path)
+    for f in files:
+        fpath = util.io.join_path(path, f)
+        if is_dir(fpath):
+            targets_in_sub_dir = search(pattern, fpath, file_only)
+            targets.extend(targets_in_sub_dir)
+    return targets
