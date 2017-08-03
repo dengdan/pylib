@@ -57,4 +57,22 @@ def print_calling_in_short_for_tf(fn):
         return ret
     return wrapper
 
+def timeit(fn):
+    import util
+    def wrapper(*args1, ** args2):
+        start = time.time()
+        thread_name = util.thread.get_current_thread_name()
+        ret = fn(*args1, **args2)
+        end = time.time()
+        counter[fn.__name__] = counter[fn.__name__] + (end - start)
+        count_times[fn.__name__] += 1
+        all_time = sum([counter[name] for name in counter]) * 1.0
+        for name in counter:
+            logging.info('\t %s: %f, %f seconds'%(name, counter[name] / all_time, counter[name]))
+            logging.info('\t %s: %d callings, %f seconds per calling'%(name, count_times[name], counter[name] * 1.0 / count_times[name]))
+        s = "Thread [%s]:function [%s] has been called, taking %f seconds"%(thread_name, fn.__name__, (end - start))
+#         logging.info(s)
+        return ret
+    return wrapper
+    
 
