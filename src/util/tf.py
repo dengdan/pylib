@@ -109,9 +109,7 @@ def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False,
             variables_to_restore.append(var)
     # Change model scope if necessary.
     if checkpoint_model_scope is not None:
-        variables_to_restore = {
-            var.op.name.replace(model_name, checkpoint_model_scope): var\
-                             for var in variables_to_restore}
+        variables_to_restore = {checkpoint_model_scope + '/' + var.op.name : var for var in variables_to_restore}
         tf.logging.info('variables_to_restore: %r'%(variables_to_restore))    
     checkpoint_path = get_latest_ckpt(checkpoint_path)
     tf.logging.info('Fine-tuning from %s. Ignoring missing vars: %s' % (checkpoint_path, ignore_missing_vars))
@@ -156,7 +154,7 @@ def Print(tensor, data, msg = '', file = None, mode = 'w'):
             print(message)
     return control_flow_ops.with_dependencies([tf.py_func(np_print, data, [])], tensor)
 
-def get_variable_names_in_checkpoint(path, return_shapes = False):
+def get_variable_names_in_checkpoint(path, return_shapes = False, return_reader = False):
     """
     Args:
         path: the path to training directory containing checkpoints, 
@@ -171,6 +169,10 @@ def get_variable_names_in_checkpoint(path, return_shapes = False):
     names = [var for var in ckpt_vars]
     if return_shapes:
         return names, ckpt_vars
+    def get(name):
+        return ckpt_reader.get_tensor(name) 
+    if return_reader:
+        return names, get
     return names
 
 

@@ -16,6 +16,9 @@ def is_str(s):
 
 def to_lowercase(s):
     return str.lower(s)
+
+def to_uppercase(s):
+    return str.upper(s)
     
 def ends_with(s, suffix, ignore_case = False):
     """
