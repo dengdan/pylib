@@ -29,6 +29,12 @@ def kill(pid):
         kill(pids)
     else:
         raise ValueError, 'Not supported parameter type:', type(pid)
+
+def ps_aux_grep(pattern):
+    import util
+    cmd = 'ps aux|grep %s'%(pattern)
+    return util.cmd.cmd(cmd)
+
         
 def get_pid(pattern):
     import util
