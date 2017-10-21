@@ -101,7 +101,7 @@ def imshow(title = None, img = None, gray = False):
 
 def show_images(images, titles = None, shape = None, share_axis = False, 
                 bgr2rgb = False, maximized = False, 
-                show = True, gray = False, save = False, 
+                show = True, gray = False, save = False, colorbar = False, 
                 path = None, axis_off = False, vertical = False, subtitle = None):
         
     if shape == None:
@@ -125,9 +125,12 @@ def show_images(images, titles = None, shape = None, share_axis = False,
             else:
                 ax = plt.subplot2grid(shape, loc)
         if len(np.shape(img)) == 2 and gray:
-            ax.imshow(img, cmap = 'gray')
+            img_ax = ax.imshow(img, cmap = 'gray')
         else:
-            ax.imshow(img)
+            img_ax = ax.imshow(img)
+        
+        if len(np.shape(img)) == 2 and colorbar:
+            plt.colorbar(img_ax, ax = ax)
         if titles != None:
             ax.set_title(titles[idx])
         

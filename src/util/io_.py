@@ -185,6 +185,7 @@ def search(pattern, path, file_only = True):
     Search files whose name matches the give pattern. The search scope
     is the directory and sub-directories of 'path'. 
     """
+    path = get_absolute_path(path)
     pattern_here = util.io.join_path(path, pattern)
     targets = []
     
@@ -204,3 +205,12 @@ def search(pattern, path, file_only = True):
             targets_in_sub_dir = search(pattern, fpath, file_only)
             targets.extend(targets_in_sub_dir)
     return targets
+
+def dump_json(path, data):
+    import json
+    path = get_absolute_path(path)
+    make_parent_dir(path)
+
+    with open(path, 'w') as f:
+        json.dump(data, f)
+    return path
