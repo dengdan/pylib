@@ -197,4 +197,6 @@ def focal_loss(labels, logits, gamma = 2.0, alpha = 0.25):
     return fl
     
 
-    
+def focal_loss_layer_initializer():
+    return tf.random_normal_initializer(stddev = 0.01), 
+            tf.constant_initializer(0.01)
