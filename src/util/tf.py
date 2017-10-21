@@ -182,3 +182,21 @@ def min_area_rect(xs, ys):
     rects = tf.py_func(util.img.min_area_rect, [xs, ys], xs.dtype)
     rects.set_shape([None, 5])
     return rects
+    
+def focal_loss(labels, logits, gamma = 2.0, alpha = 0.25):
+    labels = tf.where(labels > 0, tf.ones_like(labels), tf.zeros_like(labels))
+    
+    probs = tf.sigmoid(logits)
+    CE = tf.nn.sigmoid_cross_entropy_with_logits(labels, logits)
+    
+    alpha_t = tf.ones_like(logits) * alpha
+    alpha_t = tf.where(labels > 0, alpha_tensor, 1.0 - alpha_tensor)
+    probs_t = tf.where(labels > 0, probs, 1.0 - probs)
+    
+    fl = alpha_t * tf.pow((1.0 - probs_t), gamma) * CE
+    return fl
+    
+
+def focal_loss_layer_initializer():
+    return tf.random_normal_initializer(stddev = 0.01), 
+            tf.constant_initializer(0.01)
