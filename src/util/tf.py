@@ -5,7 +5,7 @@ try:
     slim = tf.contrib.slim
 except:
     print("tensorflow is not installed, util.tf can not be used.")
-    
+
 def is_gpu_available(cuda_only=True):
   """
   code from https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/platform/test.py
@@ -29,7 +29,7 @@ def is_gpu_available(cuda_only=True):
 def get_available_gpus(num_gpus = None):
     """
     Modified on http://stackoverflow.com/questions/38559755/how-to-get-current-available-gpus-in-tensorflow
-    However, the original code will occupy all available gpu memory.  
+    However, the original code will occupy all available gpu memory.
     The modified code need a parameter: num_gpus. It does nothing but return the device handler name
     It will work well on single-maching-training, but I don't know whether it will work well on a cluster.
     """
@@ -51,9 +51,9 @@ def get_latest_ckpt(path):
         else:
             ckpt_path = None
     else:
-        ckpt_path = path; 
+        ckpt_path = path;
     return ckpt_path
-    
+
 def get_all_ckpts(path):
     ckpt = tf.train.get_checkpoint_state(path)
     all_ckpts = ckpt.all_model_checkpoint_paths
@@ -65,7 +65,7 @@ def get_iter(ckpt):
     iter_ = int(util.str.find_all(ckpt, '.ckpt-\d+')[0].split('-')[-1])
     return iter_
 
-def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False, 
+def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False,
                 checkpoint_exclude_scopes = None, model_name = None, checkpoint_model_scope = None):
     """
     code from github/SSD-tensorflow/tf_utils.py
@@ -76,8 +76,8 @@ def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False,
     checkpoint_path: the checkpoint to be restored
     train_dir: the directory where checkpoints are stored during training.
     ignore_missing_vars: if False and there are variables in the model but not in the checkpoint, an error will be raised.
-    checkpoint_model_scope and model_name: if the root scope of checkpoints and the model in session is different, 
-            (but the sub-scopes are all the same), specify them clearly 
+    checkpoint_model_scope and model_name: if the root scope of checkpoints and the model in session is different,
+            (but the sub-scopes are all the same), specify them clearly
     checkpoint_exclude_scopes: variables to be excluded when restoring from checkpoint_path.
     Returns:
       An init function run by the supervisor.
@@ -110,7 +110,7 @@ def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False,
     # Change model scope if necessary.
     if checkpoint_model_scope is not None:
         variables_to_restore = {checkpoint_model_scope + '/' + var.op.name : var for var in variables_to_restore}
-        tf.logging.info('variables_to_restore: %r'%(variables_to_restore))    
+        tf.logging.info('variables_to_restore: %r'%(variables_to_restore))
     checkpoint_path = get_latest_ckpt(checkpoint_path)
     tf.logging.info('Fine-tuning from %s. Ignoring missing vars: %s' % (checkpoint_path, ignore_missing_vars))
     return slim.assign_from_checkpoint_fn(
@@ -157,7 +157,7 @@ def Print(tensor, data, msg = '', file = None, mode = 'w'):
 def get_variable_names_in_checkpoint(path, return_shapes = False, return_reader = False):
     """
     Args:
-        path: the path to training directory containing checkpoints, 
+        path: the path to training directory containing checkpoints,
             or path to checkpoint
     Return:
         a list of variable names in the checkpoint
@@ -170,7 +170,7 @@ def get_variable_names_in_checkpoint(path, return_shapes = False, return_reader 
     if return_shapes:
         return names, ckpt_vars
     def get(name):
-        return ckpt_reader.get_tensor(name) 
+        return ckpt_reader.get_tensor(name)
     if return_reader:
         return names, get
     return names
@@ -182,21 +182,32 @@ def min_area_rect(xs, ys):
     rects = tf.py_func(util.img.min_area_rect, [xs, ys], xs.dtype)
     rects.set_shape([None, 5])
     return rects
-    
-def focal_loss(labels, logits, gamma = 2.0, alpha = 0.25):
-    labels = tf.where(labels > 0, tf.ones_like(labels), tf.zeros_like(labels))
-    
-    probs = tf.sigmoid(logits)
-    CE = tf.nn.sigmoid_cross_entropy_with_logits(labels, logits)
-    
-    alpha_t = tf.ones_like(logits) * alpha
-    alpha_t = tf.where(labels > 0, alpha_tensor, 1.0 - alpha_tensor)
-    probs_t = tf.where(labels > 0, probs, 1.0 - probs)
-    
-    fl = alpha_t * tf.pow((1.0 - probs_t), gamma) * CE
-    return fl
-    
 
-def focal_loss_layer_initializer():
-    return tf.random_normal_initializer(stddev = 0.01), 
-            tf.constant_initializer(0.01)
+def focal_loss(labels, logits, gamma = 2.0, alpha = 0.25, normalize = True):
+    labels = tf.where(labels > 0, tf.ones_like(labels), tf.zeros_like(labels))
+
+    probs = tf.sigmoid(logits)
+    probs = tf.Print(probs, [tf.reduce_mean(probs)])
+    CE = tf.nn.sigmoid_cross_entropy_with_logits(labels = labels, logits = logits)
+
+    alpha_t = tf.ones_like(logits) * alpha
+    alpha_t = tf.where(labels > 0, alpha_t, 1.0 - alpha_t)
+    probs_t = tf.where(labels > 0, probs, 1.0 - probs)
+
+    focal_matrix = alpha_t * tf.pow((1.0 - probs_t), gamma)
+    fl = focal_matrix * CE
+
+    fl = tf.reduce_sum(fl)
+    if normalize:
+        #n_pos = tf.reduce_sum(labels)
+        #fl = fl / tf.cast(n_pos, tf.float32)
+        total_weights = tf.stop_gradient(tf.reduce_sum(focal_matrix))
+        fl = fl / total_weights
+    return fl
+
+
+def focal_loss_layer_initializer(sigma = 0.01, pi = 0.01):
+    import numpy as np
+    b0 = - np.log((1 - pi) / pi)
+    return tf.random_normal_initializer(stddev = sigma), \
+            tf.constant_initializer(b0)
