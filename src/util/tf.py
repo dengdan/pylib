@@ -1,11 +1,16 @@
 from __future__ import print_function
+from tensorflow.python.ops import nn
+
 
 try:
     import tensorflow as tf
+    relu = nn.relu
     slim = tf.contrib.slim
+    sigmoid = nn.sigmoid
+    softmax = nn.softmax
 except:
     print("tensorflow is not installed, util.tf can not be used.")
-    
+
 def is_gpu_available(cuda_only=True):
   """
   code from https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/platform/test.py
@@ -29,7 +34,7 @@ def is_gpu_available(cuda_only=True):
 def get_available_gpus(num_gpus = None):
     """
     Modified on http://stackoverflow.com/questions/38559755/how-to-get-current-available-gpus-in-tensorflow
-    However, the original code will occupy all available gpu memory.  
+    However, the original code will occupy all available gpu memory.
     The modified code need a parameter: num_gpus. It does nothing but return the device handler name
     It will work well on single-maching-training, but I don't know whether it will work well on a cluster.
     """
@@ -51,9 +56,9 @@ def get_latest_ckpt(path):
         else:
             ckpt_path = None
     else:
-        ckpt_path = path; 
+        ckpt_path = path;
     return ckpt_path
-    
+
 def get_all_ckpts(path):
     ckpt = tf.train.get_checkpoint_state(path)
     all_ckpts = ckpt.all_model_checkpoint_paths
@@ -65,7 +70,7 @@ def get_iter(ckpt):
     iter_ = int(util.str.find_all(ckpt, '.ckpt-\d+')[0].split('-')[-1])
     return iter_
 
-def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False, 
+def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False,
                 checkpoint_exclude_scopes = None, model_name = None, checkpoint_model_scope = None):
     """
     code from github/SSD-tensorflow/tf_utils.py
@@ -76,8 +81,8 @@ def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False,
     checkpoint_path: the checkpoint to be restored
     train_dir: the directory where checkpoints are stored during training.
     ignore_missing_vars: if False and there are variables in the model but not in the checkpoint, an error will be raised.
-    checkpoint_model_scope and model_name: if the root scope of checkpoints and the model in session is different, 
-            (but the sub-scopes are all the same), specify them clearly 
+    checkpoint_model_scope and model_name: if the root scope of checkpoints and the model in session is different,
+            (but the sub-scopes are all the same), specify them clearly
     checkpoint_exclude_scopes: variables to be excluded when restoring from checkpoint_path.
     Returns:
       An init function run by the supervisor.
@@ -110,7 +115,7 @@ def get_init_fn(checkpoint_path, train_dir, ignore_missing_vars = False,
     # Change model scope if necessary.
     if checkpoint_model_scope is not None:
         variables_to_restore = {checkpoint_model_scope + '/' + var.op.name : var for var in variables_to_restore}
-        tf.logging.info('variables_to_restore: %r'%(variables_to_restore))    
+        tf.logging.info('variables_to_restore: %r'%(variables_to_restore))
     checkpoint_path = get_latest_ckpt(checkpoint_path)
     tf.logging.info('Fine-tuning from %s. Ignoring missing vars: %s' % (checkpoint_path, ignore_missing_vars))
     return slim.assign_from_checkpoint_fn(
@@ -157,7 +162,7 @@ def Print(tensor, data, msg = '', file = None, mode = 'w'):
 def get_variable_names_in_checkpoint(path, return_shapes = False, return_reader = False):
     """
     Args:
-        path: the path to training directory containing checkpoints, 
+        path: the path to training directory containing checkpoints,
             or path to checkpoint
     Return:
         a list of variable names in the checkpoint
@@ -170,7 +175,7 @@ def get_variable_names_in_checkpoint(path, return_shapes = False, return_reader 
     if return_shapes:
         return names, ckpt_vars
     def get(name):
-        return ckpt_reader.get_tensor(name) 
+        return ckpt_reader.get_tensor(name)
     if return_reader:
         return names, get
     return names
@@ -182,3 +187,20 @@ def min_area_rect(xs, ys):
     rects = tf.py_func(util.img.min_area_rect, [xs, ys], xs.dtype)
     rects.set_shape([None, 5])
     return rects
+
+
+def gpu_config(config = None, allow_growth = None, gpu_memory_fraction = None):
+    if config is None:
+        config = tf.ConfigProto()
+
+    if allow_growth is not None:
+        config.gpu_options.allow_growth = allow_growth
+
+    if gpu_memory_fraction is not None:
+        config.gpu_options.per_process_gpu_memory_fraction = gpu_memory_fraction
+
+    return config
+
+def wait_for_checkpoint(path):
+    from tensorflow.contrib.training.python.training import evaluation
+    return evaluation.checkpoints_iterator(path)
