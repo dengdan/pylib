@@ -1,8 +1,13 @@
 from __future__ import print_function
+from tensorflow.python.ops import nn
+
 
 try:
     import tensorflow as tf
+    relu = nn.relu
     slim = tf.contrib.slim
+    sigmoid = nn.sigmoid
+    softmax = nn.softmax
 except:
     print("tensorflow is not installed, util.tf can not be used.")
 
@@ -183,7 +188,24 @@ def min_area_rect(xs, ys):
     rects.set_shape([None, 5])
     return rects
 
-def focal_loss(labels, logits, gamma = 2.0, alpha = 0.25, normalize = True):
+
+def gpu_config(config = None, allow_growth = None, gpu_memory_fraction = None):
+    if config is None:
+        config = tf.ConfigProto()
+
+    if allow_growth is not None:
+        config.gpu_options.allow_growth = allow_growth
+
+    if gpu_memory_fraction is not None:
+        config.gpu_options.per_process_gpu_memory_fraction = gpu_memory_fraction
+
+    return config
+
+def wait_for_checkpoint(path):
+    from tensorflow.contrib.training.python.training import evaluation
+    return evaluation.checkpoints_iterator(path)
+    
+def focal_loss(labels, logits, gamma = 2.0, alpha = 0.25):
     labels = tf.where(labels > 0, tf.ones_like(labels), tf.zeros_like(labels))
 
     probs = tf.sigmoid(logits)
