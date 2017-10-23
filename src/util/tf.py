@@ -205,11 +205,10 @@ def wait_for_checkpoint(path):
     from tensorflow.contrib.training.python.training import evaluation
     return evaluation.checkpoints_iterator(path)
     
-def focal_loss(labels, logits, gamma = 2.0, alpha = 0.25):
+def focal_loss(labels, logits, gamma = 2.0, alpha = 0.25, normalize = True):
     labels = tf.where(labels > 0, tf.ones_like(labels), tf.zeros_like(labels))
-
+    labels = tf.cast(labels, tf.float32)
     probs = tf.sigmoid(logits)
-    probs = tf.Print(probs, [tf.reduce_mean(probs)])
     CE = tf.nn.sigmoid_cross_entropy_with_logits(labels = labels, logits = logits)
 
     alpha_t = tf.ones_like(logits) * alpha
