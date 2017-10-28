@@ -205,7 +205,7 @@ def wait_for_checkpoint(path):
     from tensorflow.contrib.training.python.training import evaluation
     return evaluation.checkpoints_iterator(path)
     
-def focal_loss(labels, logits, gamma = 2.0, alpha = 0.25, normalize = True):
+def focal_loss(labels, logits, gamma = 2.0, alpha = 0.75, normalize = True):
     labels = tf.where(labels > 0, tf.ones_like(labels), tf.zeros_like(labels))
     labels = tf.cast(labels, tf.float32)
     probs = tf.sigmoid(logits)
@@ -232,3 +232,37 @@ def focal_loss_layer_initializer(sigma = 0.01, pi = 0.01):
     b0 = - np.log((1 - pi) / pi)
     return tf.random_normal_initializer(stddev = sigma), \
             tf.constant_initializer(b0)
+
+
+def sum_gradients(clone_grads, do_summary = False):                        
+    averaged_grads = []
+    for grad_and_vars in zip(*clone_grads):
+        grads = []
+        var = grad_and_vars[0][1]
+        try:
+            for g, v in grad_and_vars:
+                assert v == var
+                grads.append(g)
+            grad = tf.add_n(grads, name = v.op.name + '_summed_gradients')
+        except:
+            import pdb
+            pdb.set_trace()
+        
+        averaged_grads.append((grad, v))
+        
+        if do_summary:
+            tf.summary.histogram("variables_and_gradients_" + grad.op.name, grad)
+            tf.summary.histogram("variables_and_gradients_" + v.op.name, v)
+            tf.summary.scalar("variables_and_gradients_" + grad.op.name+\
+                  '_mean/var_mean', tf.reduce_mean(grad)/tf.reduce_mean(var))
+            tf.summary.scalar("variables_and_gradients_" + v.op.name+'_mean',tf.reduce_mean(var))
+    return averaged_grads
+
+def get_update_op():
+    """
+    Extremely important for BatchNorm
+    """
+    update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+    if update_ops:
+        return tf.group(*update_ops)
+    return None
