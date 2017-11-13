@@ -1,9 +1,9 @@
 from __future__ import print_function
-from tensorflow.python.ops import nn
 
 
 try:
     import tensorflow as tf
+    from tensorflow.python.ops import nn
     relu = nn.relu
     slim = tf.contrib.slim
     sigmoid = nn.sigmoid
