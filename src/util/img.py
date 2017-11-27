@@ -428,11 +428,16 @@ def get_rect_iou(rects1, rects2):
         iou[ri, :] = np.transpose( inter / union)
     return iou
 
-def find_contours(mask):
+
+def find_contours(mask, method = cv2.CHAIN_APPROX_SIMPLE):
     mask = np.asarray(mask, dtype = np.uint8)
     mask = mask.copy()
-    contours, _ = cv2.findContours(mask, mode = cv2.RETR_CCOMP, 
-                                   method = cv2.CHAIN_APPROX_SIMPLE)
+    try:
+        contours, _ = cv2.findContours(mask, mode = cv2.RETR_CCOMP, 
+                                   method = method)
+    except:
+        _, contours, _ = cv2.findContours(mask, mode = cv2.RETR_CCOMP, 
+                                  method = method)
     return contours
 
 def find_two_level_contours(mask):
@@ -519,3 +524,16 @@ def min_area_rect(xs, ys):
     
     box = np.asarray(box, dtype = xs.dtype)
     return box
+
+def polyline(img, points, color, closed = False, line_width = 1, thickness = None):
+    
+    if thickness is not None:
+        line_width = thickness
+        
+    shape = np.shape(points)
+    assert len(shape) == 2
+    assert shape[-1] == 2
+    
+    points = np.reshape(points, [-1, 1, 2])
+    cv2.polylines(img, [points], closed, color, thickness = line_width)
+    return img

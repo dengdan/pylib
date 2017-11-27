@@ -68,6 +68,10 @@ def get_dir(path):
         return path;
     return os.path.split(path)[0]
 
+def get_parent_dir(path):
+    current_dir = get_dir(path)
+    return get_absolute_path(join_path(current_dir, '..'))
+
 def get_filename(path):
     return os.path.split(path)[1]
 

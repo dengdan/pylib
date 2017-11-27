@@ -92,3 +92,7 @@ def is_none_or_empty(s):
     if s is None:
         return True
     return len(s)==0; 
+
+def to_json(obj):
+    import ujson
+    return ujson.dumps(obj)

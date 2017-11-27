@@ -30,11 +30,16 @@ def exit(code = 0):
 is_main = mod.is_main
 init_logger = log.init_logger
 
-def sit(img, path = None, name = ""):
+def get_temp_path(name):
+    _count = get_count();
+    path = '~/temp/no-use/images/%s_%d_%s.png'%(log.get_date_str(), _count, name)
+    return path
+def sit(img, format = 'rgb', path = None, name = ""):
     if path is None:
-        _count = get_count();
-        path = '~/temp/no-use/images/%s_%d_%s.jpg'%(log.get_date_str(), _count, name)
-      
+        path = get_temp_path(name)
+        
+    if format == 'bgr':
+        img = _img.bgr2rgb(img)
     if type(img) == list:
         plt.show_images(images = img, path = path, show = False, axis_off = True, save = True)
     else:
@@ -58,3 +63,4 @@ def cit(img, path = None, rgb = True, name = ""):
 
 def argv(index):
     return sys.argv[index]
+    

@@ -4,11 +4,15 @@ Created on 2016-9-27
 
 @author: dengdan
 '''
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import util
         
-def hist(x, title = None, normed = False, show = True, save = False, save_path = None, bin_count = 100, bins = None):    
+def hist(x, title = None, normed = False, show = True, save = False, 
+                        save_path = None, bin_count = 100, bins = None,
+                        cumulative = False):    
     x = np.asarray(x)
     if len(np.shape(x)) > 1:
 #         x = np.reshape(x, np.prod(x.shape))
@@ -16,7 +20,7 @@ def hist(x, title = None, normed = False, show = True, save = False, save_path =
     if bins == None:
         bins = np.linspace(start = min(x), stop = max(x), num = bin_count, endpoint = True, retstep = False)
     plt.figure(num = title)
-    plt.hist(x, bins, normed = normed)
+    plt.hist(x, bins, normed = normed, cumulative = cumulative)
     if save:
         if save_path is None:
             raise ValueError
@@ -158,7 +162,7 @@ def save_image(path, img = None, dpi = 150):
     if img is None:
         plt.gcf().savefig(path, dpi = dpi)
     else:
-        plt.imsave(path, img)
+        plt.imsave(path, img, format = 'png')
 
 imwrite = save_image
     
