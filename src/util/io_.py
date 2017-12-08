@@ -112,13 +112,15 @@ def read_lines(p):
     f = open(p,'r')
     return f.readlines()
     
-def write_lines(p, lines):
+def write_lines(p, lines, append_break = False):
     p = get_absolute_path(p)
     make_parent_dir(p)
     with open(p, 'w') as f:
         for line in lines:
-            f.write(line)
-            
+            if append_break:
+                f.write(line + '\n')
+            else:
+                f.write(line)
 
 def cat(p):
     """return the text in a file as a whole"""
@@ -211,7 +213,7 @@ def search(pattern, path, file_only = True):
     return targets
 
 def dump_json(path, data):
-    import json
+    import ujson as json
     path = get_absolute_path(path)
     make_parent_dir(path)
 

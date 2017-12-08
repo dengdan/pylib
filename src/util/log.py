@@ -6,7 +6,7 @@ Created on 2016年10月12日
 '''
 import datetime
 import logging
-import util
+
 import sys
 
 def get_date_str():
@@ -18,6 +18,7 @@ def init_logger(log_file = None, log_path = None, log_level = logging.DEBUG, mod
     log_path: 日志文件的文件夹路径
     mode: 'a', append; 'w', 覆盖原文件写入.
     """
+    import util
     fmt = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s: %(message)s'
     if log_path is None:
         log_path = '~/temp/log/' 

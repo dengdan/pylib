@@ -535,5 +535,6 @@ def polyline(img, points, color, closed = False, line_width = 1, thickness = Non
     assert shape[-1] == 2
     
     points = np.reshape(points, [-1, 1, 2])
+    points = np.asarray(points, dtype = np.int32)
     cv2.polylines(img, [points], closed, color, thickness = line_width)
     return img
