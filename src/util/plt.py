@@ -5,7 +5,8 @@ Created on 2016-9-27
 @author: dengdan
 '''
 import matplotlib as mpl
-mpl.use('Agg')
+#mpl.use('Agg')
+mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
 import util
@@ -55,7 +56,8 @@ def plot_solver_data(solver_path):
             plt.plot(x, val_accuracies, 'g--', label = 'Validation Accuracy')
     plt.legend()
     plt.show()
-    
+ 
+   
     
 def rectangle(xy, width, height, color = 'red', linewidth = 1, fill = False, alpha = None, axis = None):
     """
@@ -76,6 +78,18 @@ def rectangle(xy, width, height, color = 'red', linewidth = 1, fill = False, alp
     return rect
     
 rect = rectangle
+
+def set_pos(x, y):
+    mgr = plt.get_current_fig_manager()
+    backend = mpl.get_backend()
+    if backend == 'TkAgg':
+        mgr.window.wm_geometry("+%d+%d" % (x, y))
+    elif backend == 'WXAgg':
+        mgr.window.SetPosition((x, y))
+    else:
+        # This works for QT and GTK
+        # You can also use window.setGeometry
+        mgr.window.move(x, y)
 
 def maximize_figure():
     mng = plt.get_current_fig_manager()
@@ -116,6 +130,7 @@ def show_images(images, titles = None, shape = None, share_axis = False,
         
     ret_axes = []
     ax0 = None
+    plt.figure()
     for idx, img in enumerate(images): 
         if bgr2rgb:
             img = util.img.bgr2rgb(img)

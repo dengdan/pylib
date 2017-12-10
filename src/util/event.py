@@ -1,6 +1,6 @@
-import cv2
 import logging
 def wait_key(target = None):
+    import cv2
     key = cv2.waitKey()& 0xFF
     if target == None:
         return key

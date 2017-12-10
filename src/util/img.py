@@ -2,7 +2,10 @@
 '''
 @author: dengdan
 '''
-import cv2
+try:
+    import cv2
+except:
+    print 'cv2 is unavailable, util.img can not be used.'
 import numpy as np
 import logging
 import math
@@ -32,7 +35,9 @@ COLOR_BGR_YELLOW = (0, 255, 255)
 COLOR_RGB_GRAY = (47, 79, 79)
 
 COLOR_RGB_PINK = (255, 192, 203)
-def imread(path, rgb = False, mode = cv2.IMREAD_COLOR):
+def imread(path, rgb = False, mode = None):
+    if mode is None:
+        mode = cv2.IMREAD_COLOR
     path = util.io.get_absolute_path(path)
     img = cv2.imread(path, mode)
     if img is None:
@@ -336,10 +341,13 @@ def put_text(img, text, pos, scale = 1, color = COLOR_WHITE, thickness = 1):
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.putText(img = img, text = text, org = tuple(pos), fontFace = font,  fontScale = scale,  color = color, thickness = thickness)
 
-def resize(img, f = None, fx = None, fy = None, size = None, interpolation = cv2.INTER_LINEAR):
+def resize(img, f = None, fx = None, fy = None, size = None, interpolation = None):
     """
     size: (w, h)
     """
+    if interpolation is None:
+        interpolation = cv2.INTER_LINEAR
+    
     h, w = get_shape(img)
     if fx != None and fy != None:
         return cv2.resize(img, None, fx = fx, fy = fy, interpolation = interpolation)
@@ -429,7 +437,9 @@ def get_rect_iou(rects1, rects2):
     return iou
 
 
-def find_contours(mask, method = cv2.CHAIN_APPROX_SIMPLE):
+def find_contours(mask, method = None):
+    if method is None:
+        method = cv2.CHAIN_APPROX_SIMPLE
     mask = np.asarray(mask, dtype = np.uint8)
     mask = mask.copy()
     try:

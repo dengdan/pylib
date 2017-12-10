@@ -109,7 +109,7 @@ def find_files(pattern):
 def read_lines(p):
     """return the text in a file in lines as a list """
     p = get_absolute_path(p)
-    f = open(p,'r')
+    f = open(p,'rU')
     return f.readlines()
     
 def write_lines(p, lines):
