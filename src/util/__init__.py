@@ -34,9 +34,14 @@ def get_temp_path(name):
     _count = get_count();
     path = '~/temp/no-use/images/%s_%d_%s.png'%(log.get_date_str(), _count, name)
     return path
-def sit(img, format = 'rgb', path = None, name = ""):
+def sit(img = None, format = 'rgb', path = None, name = ""):
     if path is None:
         path = get_temp_path(name)
+        
+    if img is None:
+        plt.save_image(path)
+        return path
+    
         
     if format == 'bgr':
         img = _img.bgr2rgb(img)
