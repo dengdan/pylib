@@ -30,7 +30,7 @@ def exit(code = 0):
 is_main = mod.is_main
 init_logger = log.init_logger
 
-def get_temp_path(name):
+def get_temp_path(name = ''):
     _count = get_count();
     path = '~/temp/no-use/images/%s_%d_%s.png'%(log.get_date_str(), _count, name)
     return path
@@ -66,6 +66,5 @@ def cit(img, path = None, rgb = True, name = ""):
         _img.imwrite(path, img, rgb = rgb)
     return path        
 
-def argv(index):
-    return sys.argv[index]
+argv = sys.argv
     

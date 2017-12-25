@@ -5,7 +5,7 @@ Created on 2016-9-27
 @author: dengdan
 '''
 import matplotlib as mpl
-#mpl.use('Agg')
+mpl.use('Agg')
 # mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
@@ -119,15 +119,20 @@ def imshow(title = None, img = None, gray = False):
 
 def show_images(images, titles = None, shape = None, share_axis = False, 
                 bgr2rgb = False, maximized = False, 
-                show = True, gray = False, save = False, colorbar = False, 
+                show = True, gray = False, save = False, color_bar = False, 
                 path = None, axis_off = False, vertical = False, subtitle = None):
-        
+    plt.close('all')
     if shape == None:
         if vertical:
             shape = (len(images), 1)
         else:
             shape = (1, len(images))
-        
+            
+    shape = list(shape)
+    if shape[0] < 0:
+        shape[0]  =(len(images) + shape[1]) / shape[1]
+    elif shape[1] < 0:
+        shape[1] = (len(images + shape[0])) / shape[0]
     ret_axes = []
     ax0 = None
     plt.figure()
@@ -148,7 +153,7 @@ def show_images(images, titles = None, shape = None, share_axis = False,
         else:
             img_ax = ax.imshow(img)
         
-        if len(np.shape(img)) == 2 and colorbar:
+        if len(np.shape(img)) == 2 and color_bar:
             plt.colorbar(img_ax, ax = ax)
         if titles != None:
             ax.set_title(titles[idx])
@@ -165,7 +170,9 @@ def show_images(images, titles = None, shape = None, share_axis = False,
         
     if save:
         if path is None:
-            raise ValueError('path can not be None when save is True')
+            path = util.get_temp_path()
+            print path
+#             raise ValueError('path can not be None when save is True')
         save_image(path)
     if show:
         plt.show()
