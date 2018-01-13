@@ -131,6 +131,9 @@ def exists(path):
     path = get_absolute_path(path)
     return os.path.exists(path)
 
+def not_exists(path):
+    return not exists(path)
+
 def load_mat(path):
     import scipy.io as sio
     path = get_absolute_path(path)
@@ -176,6 +179,7 @@ def read_h5_attrs(h5, key, attrs):
     return h5[key].attrs[attrs]
     
 def copy(src, dest):
+    util.io.make_parent_dir(dest)
     import shutil
     shutil.copy(get_absolute_path(src), get_absolute_path(dest))
     
@@ -220,3 +224,9 @@ def dump_json(path, data):
     with open(path, 'w') as f:
         json.dump(data, f)
     return path
+
+def load_json(path):
+    import ujson as json
+    path = get_absolute_path(path)
+    with open(path, 'r')  as f:
+        return json.load(f)
