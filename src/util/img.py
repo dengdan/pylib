@@ -75,6 +75,7 @@ def imwrite(path, img, rgb = False):
     path = util.io.get_absolute_path(path)
     util.io.make_parent_dir(path)
     cv2.imwrite(path, img)
+    return path
 
 def move_win(winname, position = (0, 0)):
     """
@@ -341,7 +342,7 @@ def put_text(img, text, pos, scale = 1, color = COLOR_WHITE, thickness = 1):
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.putText(img = img, text = text, org = tuple(pos), fontFace = font,  fontScale = scale,  color = color, thickness = thickness)
 
-def resize(img, f = None, fx = None, fy = None, size = None, interpolation = None):
+def resize(img, size = None, f = None, fx = None, fy = None, interpolation = None):
     """
     size: (w, h)
     """

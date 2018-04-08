@@ -53,6 +53,7 @@ def is_dir(path):
     path = get_absolute_path(path)
     return os.path.isdir(path)
 
+is_directory = is_dir
 
 def is_path(path):
     path = get_absolute_path(path)
