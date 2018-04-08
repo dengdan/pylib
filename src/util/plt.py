@@ -5,8 +5,8 @@ Created on 2016-9-27
 @author: dengdan
 '''
 import matplotlib as mpl
-mpl.use('Agg')
-# mpl.use('TkAgg')
+# mpl.use('Agg')
+mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
 import util

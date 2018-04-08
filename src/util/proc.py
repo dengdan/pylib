@@ -12,7 +12,11 @@ def wait_for_pool(pool):
     pool.join()  
 
 def set_proc_name(name):
-    import setproctitle
+    try:
+        import setproctitle
+    except:
+        print('Module setproctitle is not installed. Run:')
+        print('\t: pip install setproctitle --user')
     setproctitle.setproctitle(name)
     
 def kill(pid):

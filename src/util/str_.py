@@ -82,6 +82,7 @@ def remove_invisible(s):
     s = replace_all(s, '\n', '')
     s = replace_all(s, '\t', '')
     s = replace_all(s, '\r', '')
+    s = replace_all(s, '\xef\xbb\xbf', '')
     return s
     
 def find_all(s, pattern):

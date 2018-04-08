@@ -16,9 +16,9 @@ def download(url, path):
       print('Successfully downloaded', filename, statinfo.st_size, 'bytes.')
     
     
-def mdownload(urls, paths, pool_size = 12):
+def mdownload(urls, paths, pool_size = 4):
     assert len(urls) == len(paths)
-    pool = util.thread.ProcessPool(pool_size)
+    pool = util.thread.ThreadPool(pool_size)
     for url, path in zip(urls, paths):
         pool.add(download, [url, path])
     pool.join()
