@@ -179,6 +179,7 @@ def read_h5_attrs(h5, key, attrs):
     return h5[key].attrs[attrs]
     
 def copy(src, dest):
+    util.io.make_parent_dir(dest)
     import shutil
     shutil.copy(get_absolute_path(src), get_absolute_path(dest))
     
@@ -227,5 +228,5 @@ def dump_json(path, data):
 def load_json(path):
     import ujson as json
     path = get_absolute_path(path)
-    with open(path, 'r') as f:
+    with open(path, 'r')  as f:
         return json.load(f)

@@ -22,6 +22,7 @@ import cmd
 import ml
 import sys
 import url
+from progress_bar import ProgressBar
 # log.init_logger('~/temp/log/log_' + get_date_str() + '.log')
 
 def exit(code = 0):
