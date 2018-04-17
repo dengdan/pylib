@@ -45,7 +45,7 @@ def get_pid(pattern):
     import util
     cmd = 'ps aux|grep %s'%(pattern)
     results = util.cmd.cmd(cmd)
-    results = util.str.split(results, '\n')
+    results = util.str.split(str(results), '\n')
     pids = []
     for result in results:
         info = result.split()

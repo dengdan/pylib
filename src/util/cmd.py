@@ -5,5 +5,6 @@ def cmd(cmd):
         import  commands
         return commands.getoutput(cmd)
     except:
-        import os
-        return os.system(cmd)
+        import subprocess
+        return subprocess.check_output(cmd, shell = True)
+#         return os.system(cmd)
