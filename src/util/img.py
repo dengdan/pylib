@@ -2,14 +2,15 @@
 '''
 @author: dengdan
 '''
+from __future__ import absolute_import
+
+from . import log
 try:
     import cv2
 except:
-    print 'cv2 is unavailable, util.img can not be used.'
+    log.info('cv2 is unavailable, util.img can not be used.')
 import numpy as np
-import logging
 import math
-import event
 import util
 
 IMREAD_GRAY = 0

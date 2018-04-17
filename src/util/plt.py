@@ -171,7 +171,7 @@ def show_images(images, titles = None, shape = None, share_axis = False,
     if save:
         if path is None:
             path = util.get_temp_path()
-            print path
+            print(path)
 #             raise ValueError('path can not be None when save is True')
         save_image(path)
     if show:
