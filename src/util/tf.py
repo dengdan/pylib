@@ -234,7 +234,7 @@ def focal_loss_layer_initializer(sigma = 0.01, pi = 0.01):
             tf.constant_initializer(b0)
 
 
-def sum_gradients(clone_grads, do_summary = False):                        
+def sum_gradients(clone_grads, do_summary = False):
     averaged_grads = []
     for grad_and_vars in zip(*clone_grads):
         grads = []
@@ -266,3 +266,10 @@ def get_update_op():
     if update_ops:
         return tf.group(*update_ops)
     return None
+
+
+def rand_val(maxval = 1, minval = 0, dtype = tf.float32, shape = (1, )):
+    return tf.random_uniform(shape = shape, minval = minval, 
+                             maxval = maxval, dtype = dtype)[0]
+
+prob = rand_val
