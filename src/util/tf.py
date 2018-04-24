@@ -273,3 +273,9 @@ def rand_val(maxval = 1, minval = 0, dtype = tf.float32, shape = (1, )):
                              maxval = maxval, dtype = dtype)[0]
 
 prob = rand_val
+
+
+def do_nothing(*args):
+    def _do_nothing(*args):
+        return args
+    return _do_nothing
