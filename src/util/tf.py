@@ -279,3 +279,10 @@ def do_nothing(*args):
     def _do_nothing():
         return args
     return _do_nothing
+
+def prob_do(probability, fn, args):
+    p = prob()
+    def do():
+        return fn(*args)
+    
+    return tf.cond(p < probability, do, do_nothing(*args))
