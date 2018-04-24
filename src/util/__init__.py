@@ -64,7 +64,7 @@ def cit(img, path = None, rgb = True, name = ""):
     _count = get_count();
     if path is None:
         img = np.np.asarray(img, dtype = np.np.uint8)
-        path = '~/temp/no-use/images/%s_%d_%s.jpg'%(log.get_date_str(), _count, name)
+        path = '~/temp/no-use/images/%s_%s_%d.jpg'%(name, log.get_date_str(), _count)
         _img.imwrite(path, img, rgb = rgb)
     return path        
 

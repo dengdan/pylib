@@ -276,6 +276,6 @@ prob = rand_val
 
 
 def do_nothing(*args):
-    def _do_nothing(*args):
+    def _do_nothing():
         return args
     return _do_nothing
