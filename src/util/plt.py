@@ -5,8 +5,8 @@ Created on 2016-9-27
 @author: dengdan
 '''
 import matplotlib as mpl
-# mpl.use('Agg')
-mpl.use('TkAgg')
+mpl.use('Agg')
+# mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
 import util
@@ -171,12 +171,11 @@ def show_images(images, titles = None, shape = None, share_axis = False,
     if save:
         if path is None:
             path = util.get_temp_path()
-            print path
 #             raise ValueError('path can not be None when save is True')
         save_image(path)
     if show:
         plt.show()
-    return ret_axes
+    return path
 
 def save_image(path, img = None, dpi = 150):
     path = util.io.get_absolute_path(path)
