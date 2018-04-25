@@ -39,7 +39,10 @@ def prob(allow_zero = True):
     """
     return rand_val(low = 0, high = 1.0, allow_zero = allow_zero)
 
-def rand_val(low = 0, high = 1.0, allow_zero = True):
+def rand_val(low = 0, high = 1.0, allow_zero = True, range = None):
+    if range is not None:
+        low = range[0]
+        high = range[1]
     val = rng.uniform(low = low, high = high)
     if not allow_zero:
         while not val:
