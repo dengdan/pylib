@@ -8,8 +8,10 @@ Tool  functions for file system operation and I/O.
 In the style of linux shell commands
 '''
 import os
-import cPickle as pkl
-import commands
+try:
+    import cPickle as pkl
+except:
+    import pickle as pkl
 import logging
 
 import util

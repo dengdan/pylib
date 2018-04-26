@@ -15,8 +15,9 @@ def set_proc_name(name):
     try:
         import setproctitle
     except:
-        print('Module setproctitle is not installed. Run:')
-        print('\t: pip install setproctitle --user')
+        import util
+        util.log.info('Module setproctitle is not installed. Run:')
+        util.log.info('\t: pip install setproctitle --user')
     setproctitle.setproctitle(name)
     
 def kill(pid):
@@ -26,13 +27,13 @@ def kill(pid):
             kill(p)
     elif type(pid) == int:
         cmd = 'kill -9 %d'%(pid)
-        print cmd
-        print util.cmd.cmd(cmd)
+        util.log.info(cmd)
+        print(util.cmd.cmd(cmd))
     elif type(pid) == str:
         pids = get_pid(pid)
         kill(pids)
     else:
-        raise ValueError, 'Not supported parameter type:', type(pid)
+        raise ValueError('Not supported parameter type:', type(pid))
 
 def ps_aux_grep(pattern):
     import util
@@ -44,7 +45,7 @@ def get_pid(pattern):
     import util
     cmd = 'ps aux|grep %s'%(pattern)
     results = util.cmd.cmd(cmd)
-    results = util.str.split(results, '\n')
+    results = util.str.split(str(results), '\n')
     pids = []
     for result in results:
         info = result.split()
