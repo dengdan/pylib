@@ -28,6 +28,17 @@ from . import time_ as time
 from .progress_bar import ProgressBar
 # log.init_logger('~/temp/log/log_' + get_date_str() + '.log')
 
+
+def env(name, value):
+    """
+    Set an environment variable
+    """
+    import os
+    os.environ[name] = value
+    
+def set_gpus(gpus):
+    env('CUDA_VISIBLE_DEVICES', gpus)
+    
 def exit(code = 0):
     sys.exit(0)
     
