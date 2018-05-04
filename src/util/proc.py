@@ -52,5 +52,6 @@ def get_pid(pattern):
         if len(info) > 0:
             pid = int(info[1])
             pids.append(pid)
+    pids.sort()
     return pids
 

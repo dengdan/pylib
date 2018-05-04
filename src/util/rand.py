@@ -33,5 +33,21 @@ def shuffle(lst):
 def sample(lst, n):
     return random.sample(lst, n)
 
+def prob(allow_zero = True):
+    """
+    Generate a random value as probability 
+    """
+    return rand_val(low = 0, high = 1.0, allow_zero = allow_zero)
+
+def rand_val(low = 0, high = 1.0, allow_zero = True, range = None):
+    if range is not None:
+        low = range[0]
+        high = range[1]
+    val = rng.uniform(low = low, high = high)
+    if not allow_zero:
+        while not val:
+            val = rng.uniform(low = low, high = high)
+    return val
+
 
     
