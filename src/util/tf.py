@@ -268,7 +268,9 @@ def get_update_op():
     return None
 
 
-def rand_val(maxval = 1, minval = 0, dtype = tf.float32, shape = (1, )):
+def rand_val(maxval = 1, minval = 0, dtype = None, shape = (1, )):
+    if not dtype:
+        dtype = tf.float32
     return tf.random_uniform(shape = shape, minval = minval, 
                              maxval = maxval, dtype = dtype)[0]
 
