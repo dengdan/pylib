@@ -55,7 +55,7 @@ def create_video_writer(path, shape, fps = 20):
     except:
         fourcc = cv2.cv.CV_FOURCC(*'XVID')
         h, w = shape[:2]
-    return cv2.VideoWriter('output.mp4',fourcc, fps, (w,h))
+    return cv2.VideoWriter(path, fourcc, fps, (w,h))
     
 def add_frame(writer, frame):
     writer.write(frame)
