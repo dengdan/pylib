@@ -48,6 +48,8 @@ class VideoWriter(object):
         self.close()
         
 def create_video_writer(path, shape, fps = 20):
+    from . import io_
+    io_.make_parent_dir(path)
     h, w = shape[:2]
     import cv2
     try:
