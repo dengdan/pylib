@@ -12,7 +12,8 @@ class VideoWriter(object):
         """
         If the shape is None, the shape of the first frame to be written will be used as the shape for all frames.
         """
-        self.path = path
+        import util
+        self.path = util.io.get_absolute_path(path)
         self.fps = fps
         self.shape = shape
         self.writer = None
@@ -49,6 +50,7 @@ class VideoWriter(object):
         
 def create_video_writer(path, shape, fps = 20):
     from . import io_
+    path = io_.get_absolute_path(path)
     io_.make_parent_dir(path)
     h, w = shape[:2]
     import cv2
