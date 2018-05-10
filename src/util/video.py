@@ -1,4 +1,11 @@
 from __future__ import absolute_import
+
+try:
+    import cv2
+except:
+    log.info('cv2 is unavailable, util.img can not be used.')
+
+
 class VideoWriter(object):
     """
     An easy to use video writer.
@@ -66,3 +73,53 @@ def add_frame(writer, frame):
     
 def close_video_writer(writer):
     writer.release()
+
+def get_fps(video):
+    if type(video) == str:
+        path = util.io.get_absolute_path('~/temp/no-use/lane.mp4')
+        video = cv2.VideoCapture(path)  
+    
+    try:
+        fps = video.get(cv2.CAP_PROP_FPS)  
+    except:
+        fps = video.get(cv2.cv.CV_CAP_PROP_FPS)
+    return fps
+
+class VideoReader():
+    """
+    Example:
+    with VideoReader(path) as video:
+        for frame in video:
+            cv2.imshow('', frame)
+            ....
+    """
+    def __init__(self, path):
+        import util
+        self.path = util.io.get_absolute_path(path)
+        self._video = cv2.VideoCapture(self.path)
+        self._fps = get_fps(self._video)
+    
+    @property
+    def fps(self):
+        return self._fps
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        success, frame = self._video.read()  
+        if success:
+            return frame
+        raise StopIteration
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exception_type, exception_code, traceback):
+        self._video.release()
+
+
+
+        
+        
+        
