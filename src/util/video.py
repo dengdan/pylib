@@ -112,6 +112,9 @@ class VideoReader():
             return frame
         raise StopIteration
     
+    def next(self):
+        return self.__next__()
+
     def __enter__(self):
         return self
     
