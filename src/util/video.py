@@ -3,6 +3,7 @@ from __future__ import absolute_import
 try:
     import cv2
 except:
+    from . import log
     log.info('cv2 is unavailable, util.img can not be used.')
 
 
