@@ -22,7 +22,7 @@ class ProgressBar:
         self.count += count
         sys.stdout.write(' ' * (self.width + 9) + '\r')
         sys.stdout.flush()
-        progress = self.width * self.count / self.total
+        progress = self.width * self.count // self.total
         sys.stdout.write('{}{:3}/{:3}: '.format(msg, self.count, self.total))
         sys.stdout.write(self.finish_symbol * progress + self.init_symbol * (self.width - progress) + '\r')
         if progress == self.width:

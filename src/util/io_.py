@@ -109,10 +109,14 @@ def find_files(pattern):
     import glob
     return glob.glob(pattern)
 
-def read_lines(p):
+def read_lines(p, encoding = None):
     """return the text in a file in lines as a list """
     p = get_absolute_path(p)
-    f = open(p,'rU')
+    if encoding:
+        import codecs
+        f = codecs.open(p, 'rU', encoding)
+    else:
+        f = open(p,'rU')
     return f.readlines()
     
 def write_lines(p, lines, append_break = True, utf8 = False):
