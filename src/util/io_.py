@@ -115,7 +115,7 @@ def read_lines(p):
     f = open(p,'rU')
     return f.readlines()
     
-def write_lines(p, lines, append_break = False):
+def write_lines(p, lines, append_break = True, utf8 = False):
     p = get_absolute_path(p)
     make_parent_dir(p)
     with open(p, 'w') as f:

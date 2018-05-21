@@ -6,13 +6,17 @@ def int_array_to_str(arr):
 def join(arr, splitter=','):
     temp = []
     for e in arr:
+        if is_str(e):
+            e = e.encode('utf-8')
+        else:
+            e = str(e)
         temp.append(e)
         temp.append(splitter)
     temp.pop()
     return "".join(temp)
 
 def is_str(s):
-    return type(s) == str
+    return type(s) == str or type(s) == unicode
 
 def to_lowercase(s):
     return str.lower(s)
