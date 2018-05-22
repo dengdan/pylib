@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-
 try:
     import tensorflow as tf
     from tensorflow.python.ops import nn
@@ -288,3 +287,6 @@ def prob_do(probability, fn, args):
         return fn(*args)
     
     return tf.cond(p < probability, do, do_nothing(*args))
+
+def get_shape_list(tensor):
+    return tensor.shape.as_list()
