@@ -16,8 +16,10 @@ Create an array of the given shape and populate it with random samples from a un
 """
 
 
-def normal(shape, mu = 0, sigma_square = 1):
-    return rng.normal(mu, np.sqrt(sigma_square), shape)
+def normal(shape, mu = 0, sigma_square = 1, dtype = np.float32):
+    tensor =  rng.normal(mu, np.sqrt(sigma_square), shape)
+    return np.array(tensor, dtype = dtype)
+    
 
 def randint(low = 2 ** 30, high = None, shape = None):
     """
