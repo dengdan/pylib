@@ -27,6 +27,8 @@ from . import url
 from . import time_ as time
 from .progress_bar import ProgressBar
 from . import video
+from . import obj
+from . import arg
 # log.init_logger('~/temp/log/log_' + get_date_str() + '.log')
 
 

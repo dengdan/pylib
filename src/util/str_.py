@@ -16,7 +16,10 @@ def join(arr, splitter=','):
     return "".join(temp)
 
 def is_str(s):
-    return type(s) == str or type(s) == unicode
+    try:
+        return type(s) == str or type(s) == unicode
+    except:
+        return isinstance(s, str)
 
 def to_lowercase(s):
     return str.lower(s)
@@ -88,6 +91,9 @@ def remove_invisible(s):
     s = replace_all(s, '\r', '')
     s = replace_all(s, '\xef\xbb\xbf', '')
     return s
+
+def trim(s):
+    return s.strip()
     
 def find_all(s, pattern):
     import re
@@ -98,8 +104,9 @@ def is_none_or_empty(s):
         return True
     return len(s)==0; 
 
-def to_json(obj):
+def to_json(obj, indent = None):
     import ujson
-    return ujson.dumps(obj)
+    return ujson.dumps(obj, indent = indent)
+
 
 
