@@ -5,8 +5,8 @@ Created on 2016-9-27
 @author: dengdan
 '''
 import matplotlib as mpl
-mpl.use('Agg')
-# mpl.use('TkAgg')
+# mpl.use('Agg')
+mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
 import util
@@ -139,7 +139,7 @@ def show_images(images, titles = None, shape = None, share_axis = False,
     for idx, img in enumerate(images): 
         if bgr2rgb:
             img = util.img.bgr2rgb(img)
-        loc = (idx / shape[1], idx % shape[1])
+        loc = (idx // shape[1], idx % shape[1])
         if idx == 0:
             ax = plt.subplot2grid(shape, loc)
             ax0 = ax
