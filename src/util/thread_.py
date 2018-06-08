@@ -21,11 +21,7 @@ def create_and_start(name, target, daemon = True):
   
 class ThreadPool(object):
     def __init__(self, capacity = 10):
-        try:
-            import threadpool
-        except:
-            print('threadpool is not install. Please run:')
-            print('\t pip install threadpool --user')
+        import threadpool
         self.num_threads = capacity
         self.pool = threadpool.ThreadPool(10)
         
