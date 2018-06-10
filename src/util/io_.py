@@ -28,7 +28,8 @@ def mkdir(path):
 def make_parent_dir(path):
     """make the parent directories for a file."""
     parent_dir = get_dir(path)
-    mkdir(parent_dir)
+    if not exists(parent_dir):
+        mkdir(parent_dir)
     
     
 def pwd():

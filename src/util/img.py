@@ -459,7 +459,7 @@ def find_two_level_contours(mask):
     return contours, tree
     
     
-def is_in_contour(point, cnt):
+def is_in_contour(point, cnt, include_edge = True):
     """tell whether a point is in contour or not. 
             In-contour here includes both the 'in contour' and 'on contour' cases.
        point:(x, y)
@@ -468,7 +468,11 @@ def is_in_contour(point, cnt):
     # doc of pointPolygonTest: http://docs.opencv.org/2.4/modules/imgproc/doc/structural_analysis_and_shape_descriptors.html?highlight=pointpolygontest#cv.PointPolygonTest
     # the last argument means only tell if in or not, without calculating the shortest distance
     in_cnt = cv2.pointPolygonTest(cnt, point, False)
-    return in_cnt >= 0;
+    if include_edge:
+        return in_cnt >= 0;
+    return in_cnt > 0
+
+in_contour = is_in_contour
 
 def convex_hull(contour):
     hull = cv2.convexHull(contour, returnPoints=1)
