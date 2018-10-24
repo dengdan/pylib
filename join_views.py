@@ -2,7 +2,7 @@ import numpy as np
 from collections import defaultdict
 import util
 view_dirs = util.argv[1:]
-
+TIME_DIFF_TH = 0.2
 def get_ts(path) :
     ts_str = util.str.find_all(path, "\d+\.\d+")[0]
     return float(ts_str)
@@ -12,19 +12,37 @@ def get_frame(path):
     frame = int(util.str.replace_all(s, "_", ""));
     return frame;
 
+def get_planning_img(path, shape, idx):
+    ts = get_ts(path);
+    new_name = str(idx) + "_Planning_" + util.time.timestamp2str(ts) 
+    image_data = util.img.imread(path)
+    h, w = image_data.shape[:-1]
+    pos = (0, 15)
+    util.img.put_text(image_data, new_name, pos, 0.5, util.img.COLOR_BGR_RED, 1)
+    image_data = util.img.resize(image_data, shape[::-1])
+    return image_data
+
 def join_views():
     image_dict = defaultdict(list);
     timestamps = set()
+    planning_dict = {}
+    num_views = len(view_dirs)
     for view_idx, view_dir in enumerate(view_dirs):
         view_dirs[view_idx] = util.io.get_absolute_path(view_dir)
         image_names = util.io.ls(view_dir, ".jpg")
         for image_name in image_names:
+            ts = get_ts(image_name);
+            if util.str.contains(image_name, "Planning",  ignore_case = True):
+                planning_dict[ts] = view_dir + "/" + image_name
+                continue;
             if util.str.contains(image_name, "Fusion"):
-                ts = get_ts(image_name);
                 timestamps.add(ts);
             ts = get_ts(image_name)
             image_dict[ts].append(view_dir + "/" + image_name)
-    
+    planning_timestamps = planning_dict.keys()
+    planning_timestamps.sort()
+    if planning_timestamps:
+        num_views -= 1;
     timestamps = list(timestamps);
     timestamps.sort();
     view_names = [util.io.get_filename(name) for name in view_dirs]
@@ -35,6 +53,8 @@ def join_views():
         images = []
         camera_images = []
         output_path = util.io.join_path(output_dir, str(get_frame(image_dict[ts][0])) +"_" + str(ts) + ".jpg");
+        if len(image_dict[ts]) < num_views:
+            continue
         if util.io.exists(output_path):
             continue
         for image_path in image_dict[ts]:
@@ -44,6 +64,17 @@ def join_views():
                 camera_images.append(image)
             else:
                 images.append(image)
+        min_diff = 1000;
+        min_idx = -1
+        for pidx, pts in enumerate(planning_timestamps):
+            diff = abs(pts - ts)
+            if diff < min_diff:
+                min_idx = pidx
+                min_diff = diff 
+        
+        if min_diff < TIME_DIFF_TH:
+            images.append(get_planning_img(planning_dict[planning_timestamps[min_idx]], images[0].shape[:-1], min_idx))
+            
         image_data = np.concatenate(images, axis = 1)
         if camera_images:
             h, w = camera_images[0].shape[:-1]
