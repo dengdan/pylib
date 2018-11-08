@@ -60,7 +60,7 @@ def join_views():
         for image_path in image_dict[ts]:
             image_name = util.io.get_filename(image_path)
             image = util.img.imread(image_path, rgb = False)
-            if util.str.contains(image_name, 'camera'):
+            if util.str.contains(image_name, 'Camera'):
                 camera_images.append(image)
             else:
                 images.append(image)
