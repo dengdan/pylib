@@ -46,7 +46,8 @@ def join_views():
     timestamps = list(timestamps);
     timestamps.sort();
     view_names = [util.io.get_filename(name) for name in view_dirs]
-    output_dir = "~/temp/no-use/" + util.str.join(view_names, "+");
+    output_dir = util.io.join_path("~/temp/no-use/", \
+                                                util.str.replace_all(view_dirs[0], "/", "_") + util.str.join(view_names, "+"))
     bar = util.ProgressBar(len(image_dict))
     for ts in timestamps:
         bar.move(1)
