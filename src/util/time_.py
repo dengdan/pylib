@@ -20,8 +20,7 @@ def timeit(code, setup, number):
             L.append(i)
 
     if __name__ == '__main__':
-        import timeit
         print(timeit("test()", setup="from __main__ import test"))
     """
-    import timeit
-    return timeit.timeit(code, setup, number)
+    import timeit as tt
+    return tt.timeit(code, setup, number = number)
