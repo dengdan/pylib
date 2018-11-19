@@ -10,3 +10,18 @@ def get_timestamp(s, fmt = "%Y-%m-%d %H:%M:%S"):
     timeArray = time.strptime(s, fmt)
     timestamp = time.mktime(timeArray)
     return timestamp
+
+def timeit(code, setup, number):
+    """
+    https://docs.python.org/2/library/timeit.html
+    def test():
+        L = []
+        for i in range(100):
+            L.append(i)
+
+    if __name__ == '__main__':
+        import timeit
+        print(timeit("test()", setup="from __main__ import test"))
+    """
+    import timeit
+    return timeit.timeit(code, setup, number)

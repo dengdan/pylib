@@ -165,7 +165,14 @@ def dir_mat(path):
 SIZE_UNIT_K = 1024
 SIZE_UNIT_M = SIZE_UNIT_K ** 2
 SIZE_UNIT_G = SIZE_UNIT_K ** 3
+unit_dict = {"M" :  SIZE_UNIT_M, "K" : SIZE_UNIT_K, "G" : SIZE_UNIT_G}
 def get_file_size(path, unit = SIZE_UNIT_K):
+    if type(unit) == str:
+        import util
+        try:
+            unit = unit_dict[util.str.to_uppercase(unit)[0]]
+        except:
+            util.log.error("Unkown filesize unit: " + unit)
     size = os.path.getsize(get_absolute_path(path))
     return size * 1.0 / unit
     

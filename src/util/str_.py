@@ -15,6 +15,16 @@ def join(arr, splitter=','):
     temp.pop()
     return "".join(temp)
 
+def join_(arr, splitter=","):
+    temp = []
+    for e in arr:
+        if is_str(e):
+            e = e.encode('utf-8')
+        else:
+            e = str(e)
+        temp.append(e)
+    return splitter.join(temp)
+ 
 def is_str(s):
     try:
         return type(s) == str or type(s) == unicode
