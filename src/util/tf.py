@@ -198,6 +198,8 @@ def get_estimator_config(
                gpu_allow_growth = True, 
                gpu_memory_fraction = -1, 
                train_distribute=None):
+    if save_checkpoints_steps:
+        save_checkpoints_secs = None
     sess_config = get_session_config(
                         allow_growth = gpu_allow_growth, 
                       gpu_memory_fraction = gpu_memory_fraction,
