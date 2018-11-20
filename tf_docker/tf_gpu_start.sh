@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 SHELL_PATH="$( cd "$( dirname "$0"  )" && pwd  )"
-DOCKER_REPO=tensorflow-gpu
+DOCKER_REPO=dengdan/tensorflow-gpu
 VERSION=latest
 ARCH=$(uname -m)
 DOCKER_HOME="/root"
