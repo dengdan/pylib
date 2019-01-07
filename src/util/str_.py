@@ -6,9 +6,7 @@ def int_array_to_str(arr):
 def join(arr, splitter=','):
     temp = []
     for e in arr:
-        if is_str(e):
-            e = e.encode('utf-8')
-        else:
+        if not is_str(e):
             e = str(e)
         temp.append(e)
         temp.append(splitter)
