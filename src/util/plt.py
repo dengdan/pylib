@@ -4,12 +4,16 @@ Created on 2016-9-27
 
 @author: dengdan
 '''
-import matplotlib as mpl
-# mpl.use('Agg')
-mpl.use('TkAgg')
-import matplotlib.pyplot as plt
-import numpy as np
-import util
+try:
+    import matplotlib as mpl
+    # mpl.use('Agg')
+    mpl.use('TkAgg')
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import util
+except Exception as e:
+    print(e)
+    
         
 def hist(x, title = None, normed = False, show = True, save = False, 
                         save_path = None, bin_count = 100, bins = None,

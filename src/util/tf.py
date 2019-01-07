@@ -10,25 +10,8 @@ try:
 except:
     print("tensorflow is not installed, util.tf can not be used.")
 
-def is_gpu_available(cuda_only=True):
-  """
-  code from https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/platform/test.py
-  Returns whether TensorFlow can access a GPU.
-  Args:
-    cuda_only: limit the search to CUDA gpus.
-  Returns:
-    True iff a gpu device of the requested kind is available.
-  """
-  from tensorflow.python.client import device_lib as _device_lib
-
-  if cuda_only:
-    return any((x.device_type == 'GPU')
-               for x in _device_lib.list_local_devices())
-  else:
-    return any((x.device_type == 'GPU' or x.device_type == 'SYCL')
-               for x in _device_lib.list_local_devices())
-
-
+def is_gpu_available():
+    return tf.test.is_gpu_available()
 
 def get_available_gpus(num_gpus = None):
     """
@@ -197,9 +180,40 @@ def gpu_config(config = None, allow_growth = None, gpu_memory_fraction = None):
 
     if gpu_memory_fraction is not None:
         config.gpu_options.per_process_gpu_memory_fraction = gpu_memory_fraction
-
     return config
 
+def get_session_config(allow_growth = True, gpu_memory_fraction = None, 
+                       allow_soft_placement=True):
+    config = tf.ConfigProto(allow_soft_placement=allow_soft_placement)
+    gpu_config(config, allow_growth, gpu_memory_fraction)
+    
+def get_estimator_config(
+               model_dir=None,
+               save_summary_steps=100,
+               save_checkpoints_steps=None,
+               save_checkpoints_secs=3600,
+               keep_checkpoint_max=500,
+               log_step_count_steps=100,
+               gpu_allow_soft_placement = True, 
+               gpu_allow_growth = True, 
+               gpu_memory_fraction = -1, 
+               train_distribute=None):
+    if save_checkpoints_steps:
+        save_checkpoints_secs = None
+    sess_config = get_session_config(
+                        allow_growth = gpu_allow_growth, 
+                      gpu_memory_fraction = gpu_memory_fraction,
+                      allow_soft_placement = gpu_allow_soft_placement)
+    
+    return tf.estimator.RunConfig(
+        model_dir = model_dir, 
+        save_summary_steps = save_summary_steps, 
+        save_checkpoints_steps = save_checkpoints_steps, 
+        save_checkpoints_secs = save_checkpoints_secs, 
+        session_config = sess_config, 
+        keep_checkpoint_max = keep_checkpoint_max, 
+        log_step_count_steps =  log_step_count_steps)
+    
 def wait_for_checkpoint(path):
     from tensorflow.contrib.training.python.training import evaluation
     return evaluation.checkpoints_iterator(path)
@@ -290,3 +304,4 @@ def prob_do(probability, fn, args):
 
 def get_shape_list(tensor):
     return tensor.shape.as_list()
+
