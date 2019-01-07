@@ -14,7 +14,7 @@ def get_frame(path):
 
 def get_planning_img(path, shape, idx):
     ts = get_ts(path);
-    new_name = str(idx) + "_Planning_" + util.time.timestamp2str(ts) 
+    new_name = str(idx) + "_Planning_" + util.time.timestamp2str(ts)
     image_data = util.img.imread(path)
     h, w = image_data.shape[:-1]
     pos = (0, 15)
@@ -39,7 +39,7 @@ def join_views():
                 timestamps.add(ts);
             ts = get_ts(image_name)
             image_dict[ts].append(view_dir + "/" + image_name)
-    planning_timestamps = planning_dict.keys()
+    planning_timestamps = list(planning_dict.keys())
     planning_timestamps.sort()
     if planning_timestamps:
         num_views -= 1;
@@ -71,18 +71,18 @@ def join_views():
             diff = abs(pts - ts)
             if diff < min_diff:
                 min_idx = pidx
-                min_diff = diff 
-        
+                min_diff = diff
+
         if min_diff < TIME_DIFF_TH:
             images.append(get_planning_img(planning_dict[planning_timestamps[min_idx]], images[0].shape[:-1], min_idx))
-            
+
         image_data = np.concatenate(images, axis = 1)
         if camera_images:
             h, w = camera_images[0].shape[:-1]
             camera_width = images[0].shape[1]
             if len(camera_images) == 1:
                 camera_shape = (image_data.shape[0], camera_width, 3)
-                camera_data = np.zeros(camera_shape, dtype = np.uint8) 
+                camera_data = np.zeros(camera_shape, dtype = np.uint8)
                 camera_height = int(h * (camera_width * 1.0 / w))
                 ci = camera_images[0]
                 ci = util.img.resize(ci, (camera_width, camera_height))
@@ -95,7 +95,7 @@ def join_views():
     #         image_data = util.img.resize(image_data, (image_data.shape[1], image_height))
             image_data = np.concatenate([camera_data, image_data], axis = 1)
         util.img.imwrite(output_path, image_data)
-        #util.plt.show_images(images = images, titles = view_names, save = True, show = True, path = image_path, axis_off = True) 
+        #util.plt.show_images(images = images, titles = view_names, save = True, show = True, path = image_path, axis_off = True)
 
 if __name__ == "__main__":
     while True:
