@@ -2,6 +2,7 @@ from __future__ import absolute_import
 import sys
 import io as sys_io
 
+from . import stereo
 from . import dtype
 from . import log
 from . import plt

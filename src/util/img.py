@@ -63,10 +63,8 @@ def imshow(winname, img, block = True, position = None, maximized = False, rgb =
     if maximized:
         maximize_win(winname)  
         
-        
     if block:
-#         cv2.waitKey(0)
-        event.wait_key(" ")
+        cv2.waitKey(0)
         cv2.destroyAllWindows()
 
 
@@ -128,7 +126,6 @@ def ds_size(image_size, kernel_size, stride):
     """calculate the size of downsampling result"""
     image_x, image_y = image_size
     
-
     kernel_x, kernel_y = kernel_size
     stride_x, stride_y = stride
     

@@ -232,7 +232,10 @@ def search(pattern, path, file_only = True):
     return targets
 
 def dump_json(path, data):
-    import ujson as json
+    try:
+        import ujson as json
+    except:
+        import json
     path = get_absolute_path(path)
     make_parent_dir(path)
 
@@ -241,7 +244,10 @@ def dump_json(path, data):
     return path
 
 def load_json(path):
-    import ujson as json
+    try: 
+        import ujson as json
+    except:
+        import json
     path = get_absolute_path(path)
     with open(path, 'r')  as f:
         return json.load(f)
