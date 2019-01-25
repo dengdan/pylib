@@ -477,7 +477,8 @@ def convex_hull(contour):
     
 def random_color_3():
     c = util.rand.randint(low = 0, high = 255, shape = (3, ))
-#     c = np.uint8(c)
+    c = np.uint8(c)
+    c = tuple(c.tolist())
     return c
 
 def get_contour_area(cnt):
