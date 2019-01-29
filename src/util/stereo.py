@@ -6,8 +6,13 @@ import json
 from collections import OrderedDict
 
 def _cvt_point(p):
-    return np.asarray([[[p[0], p[1]]]], dtype = np.float32)
-
+    if np.ndim(p) == 1:
+        p = [p]
+    if np.ndim(p) == 2:
+        return np.asarray([[[pt[0], pt[1]] for pt in p]], dtype = np.float32)
+    assert np.ndim(p) == 3
+    return p
+    
 class JsonObject(object):
     _fields = []
     def __init__(self, **data):
@@ -249,7 +254,12 @@ class BinocularModel(JsonObject):
                                     self.right_camera_model.mapx, 
                                     self.right_camera_model.mapy)
     
-    def dispairity(self, lpoints, rpoints):
+    def dispairity(self, lpoints, rpoints, distorted = False):
+        lpoints = _cvt_point(lpoints)
+        rpoints = _cvt_point(rpoints)
+        if distorted:
+            lpoints = self.left_camera_model.undistort_points(lpoints)
+            rpoints = self.right_camera_model.undistort_points(rpoints)
         return lpoints[..., 0] - rpoints[..., 0]
     
     def deproject(self, lpoints, rpoints):
