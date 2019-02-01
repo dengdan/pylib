@@ -4,6 +4,7 @@ import numpy as np
 import math
 import json
 from collections import OrderedDict
+import pdb
 
 def _cvt_point(p):
     if np.ndim(p) == 1:
@@ -12,7 +13,17 @@ def _cvt_point(p):
         return np.asarray([[[pt[0], pt[1]] for pt in p]], dtype = np.float32)
     assert np.ndim(p) == 3
     return p
-    
+
+def fov(fx, w):
+    tan = w / fx * .5
+    return np.arctan(tan) * 2 / np.pi * 180.0
+
+def min_mono_visible_distance(vertical_fov, install_height):    
+    return install_height * np.tan(vertical_fov / 180 * np.pi)
+
+def min_bino_visible_distance(fx, w, B):
+    return fx / w * B
+
 class JsonObject(object):
     _fields = []
     def __init__(self, **data):
@@ -82,6 +93,7 @@ class CameraModel(JsonObject):
         self.distortion[2][0] = self.p1
         self.distortion[3][0] = self.p2
         self.size = tuple(self.size)
+        self.w, self.h = self.size
         self.P = np.asarray(self.P)
         self.R = np.asarray(self.R)
         self.set_alpha(self.alpha)
@@ -146,6 +158,13 @@ class CameraModel(JsonObject):
         Apply the post-calibration undistortion to the source image
         """
         return cv2.remap(src, self.mapx, self.mapy, cv2.INTER_LINEAR)
+    
+    def fov(self):
+        return fov(self.fx, self.w), fov(self.fy, self.h)
+    
+    def visible_range(self, install_height):
+        xfov, yfov = self.fov()
+        return min_visible_distance(yfov, install_height)
 
 class CalibrationBoard(object):
     class Patterns:
@@ -223,6 +242,7 @@ class BinocularModel(JsonObject):
         self.Q = np.zeros((4, 4))
         self.R = np.asarray(self.R)
         self.T = np.asarray(self.T)
+        self.B = abs(self.T[0])
         self.left_camera_model = CameraModel(**self.left_camera_model)
         self.right_camera_model = CameraModel(**self.right_camera_model)
         self.set_alpha(0)
@@ -274,3 +294,10 @@ class BinocularModel(JsonObject):
     def get_depth(self, distored_lp, distored_rp):
         coords = self.deproject(_cvt_point(distored_lp), _cvt_point(distored_rp))
         return coords[0][2]
+    
+    def min_visible_distance(self):
+        """
+        the min visible distance of binocular system
+        """
+        return min_bino_visible_distance(self.left_camera_model.fx, self.left_camera_model.w, self.B)
+    

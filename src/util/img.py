@@ -552,3 +552,7 @@ def polyline(img, points, color, closed = False, line_width = 1, thickness = Non
     points = np.asarray(points, dtype = np.int32)
     cv2.polylines(img, [points], closed, color, thickness = line_width)
     return img
+
+def line(img, start, end, color, thickness):
+    return cv2.line(img, start, end, color, thickness)
+    
