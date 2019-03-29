@@ -118,14 +118,14 @@ def line(xy_start, xy_end, color = 'red', linewidth = 1, alpha = None, axis = No
         axis.add_line(line)
     return line
 
-def imshow(title = None, img = None, gray = False):
-    show_images([img], [title], gray = gray)
+def imshow(title = None, img = None, gray = False, show = True):
+    show_images([img], [title], gray = gray, show = show)
 
 def show_images(images, titles = None, shape = None, share_axis = False, 
                 bgr2rgb = False, maximized = False, 
                 show = True, gray = False, save = False, color_bar = False, 
                 path = None, axis_off = False, vertical = False, subtitle = None):
-    plt.close('all')
+#     plt.close('all')
     if shape == None:
         if vertical:
             shape = (len(images), 1)

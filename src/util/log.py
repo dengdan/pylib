@@ -41,6 +41,6 @@ def init_logger(log_file = None, log_path = None, log_level = logging.DEBUG, mod
 #     console.setFormatter(formatter)
 #     logging.getLogger('').addHandler(console)
 
-
-def info(msg):
-    logging.info(msg)
+info = logging.info
+error = logging.error
+warn = logging.warn
