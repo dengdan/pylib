@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 
 SHELL_PATH="$( cd "$( dirname "$0"  )" && pwd  )"
-DOCKER_REPO=dengdan/tensorflow-gpu
+#DOCKER_REPO=dengdan/tensorflow-gpu
 VERSION=latest
 ARCH=$(uname -m)
 DOCKER_HOME="/root"
 DATE=$(date +%F)
-IMG=${DOCKER_REPO}:$VERSION
-
-if [ -z $DOCKER_NAME ];then
-    DOCKER_NAME="${USER}_tensorflow_gpu"
-fi
+IMG=gui_test
+DOCKER_NAME="${USER}_gui_test"
 
 
 PYLIB_PATH="$(pwd)/.."
@@ -70,14 +67,7 @@ function main(){
         
 	
     docker exec ${DOCKER_NAME} service ssh start
-    if [ -z "$(command -v nvidia-smi)" ]; then
-        docker exec ${DOCKER_NAME} ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1
-    fi
       
-    docker exec -u root ${DOCKER_NAME} sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    docker cp -L ~/.gitconfig ${DOCKER_NAME}:${DOCKER_HOME}/.gitconfig
-    docker cp -L ~/.vimrc ${DOCKER_NAME}:${DOCKER_HOME}/.vimrc
-    docker cp -L ~/.vim ${DOCKER_NAME}:${DOCKER_HOME}
  }
 
 main

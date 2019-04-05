@@ -1,8 +1,8 @@
-#FROM tensorflow/tensorflow:latest-devel-gpu-py3
-FROM dengdan/tensorflow-gpu
+FROM ubuntu
+#FROM dengdan/tensorflow-gpu
 RUN apt-get update && apt-get install -y openssh-server
-RUN apt-get install -y tmux htop vim zsh git locales libcv-dev
-RUN pip install opencv-python matplotlib setproctitle
+RUN apt-get install -y tmux htop vim zsh git locales sumo-tools
+#RUN pip install opencv-python matplotlib setproctitle
 RUN mkdir /var/run/sshd
 RUN echo 'root:1' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
