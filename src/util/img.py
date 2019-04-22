@@ -44,7 +44,7 @@ def imread(path, rgb = False, mode = None):
     if img is None:
         raise IOError('File not found:%s'%(path))
         
-    if rgb:
+    if rgb and mode != IMREAD_GRAY:
         img = bgr2rgb(img)
     return img
 
