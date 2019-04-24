@@ -121,6 +121,9 @@ def rgb2gray(img):
 def bgr2gray(img):
     return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
+def gray2bgr(img):
+    assert img.ndim == 2
+    return cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
 def ds_size(image_size, kernel_size, stride):
     """calculate the size of downsampling result"""

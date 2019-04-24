@@ -5,6 +5,7 @@ import math
 import json
 from collections import OrderedDict
 import pdb
+import util
 
 def _cvt_point(p):
     if np.ndim(p) == 1:
@@ -189,7 +190,7 @@ class CalibrationBoard(object):
                 opts_loc[j, 1] = (j % self.n_cols)
             opts_loc[j, 2] = 0
             if use_board_size:
-                opts_loc[j, :] = opts_loc[j, :] * self.dim
+                opts_loc[j, :] = opts_loc[j, :] * self.square
         if expand_dim:
             opts_loc = np.expand_dims(opts_loc, axis = 1)
         return opts_loc
@@ -223,11 +224,12 @@ class CalibrationBoard(object):
     
     def draw_corners(self, img, corners = None):
         ok = False
-        if not corners:
+        if corners is None:
             ok, corners = self.find_corners(img, refine = True) 
+        else:
+            ok = True
         if not ok:
             return img
-        
         cv2.drawChessboardCorners(img, (self.n_cols, self.n_rows), corners, True)
         return img
 

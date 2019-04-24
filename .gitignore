@@ -5,7 +5,12 @@ __pycache__/
 .settings
 # C extensions
 *.so
-
+.project
+.autotools
+.cprpoject
+*.swp
+.*project
+*DS_Store*
 # Distribution / packaging
 .Python
 env/
