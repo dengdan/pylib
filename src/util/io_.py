@@ -133,7 +133,8 @@ def write_lines(p, lines, append_break = True, utf8 = False):
 def cat(p):
     """return the text in a file as a whole"""
     cmd = 'cat ' + p
-    return commands.getoutput(cmd)
+#     return commands.getoutput(cmd)
+    return util.cmd.cmd(cmd)
 
 def exists(path):
     path = get_absolute_path(path)
@@ -251,3 +252,17 @@ def load_json(path):
     path = get_absolute_path(path)
     with open(path, 'r')  as f:
         return json.load(f)
+    
+def load_pb(path, cls):
+    """
+    load a protobuf object from file
+    path: path to the serialized object
+    cls: the class of the object
+    """
+    from google.protobuf import text_format
+    obj = cls()
+    with open(get_absolute_path(path)) as f:
+        text_format.Merge(f.read(), obj)
+    return obj
+
+    

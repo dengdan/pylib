@@ -1,8 +1,14 @@
-#FROM tensorflow/tensorflow:latest-devel-gpu-py3
-FROM dengdan/tensorflow-gpu
+FROM tensorflow/tensorflow:1.14.0-gpu-py3
+#FROM dengdan/tensorflow-gpu
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN apt-get update && apt-get install -y openssh-server
-RUN apt-get install -y tmux htop vim zsh git locales libcv-dev
-RUN pip install opencv-python matplotlib setproctitle
+RUN apt-get install -y tmux htop vim zsh git locales libopencv-dev libboost-all-dev
+
+RUN pip install --upgrade pip
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple Pillow scikit-learn protobuf scipy matplotlib setproctitle opencv-python  
+
 RUN mkdir /var/run/sshd
 RUN echo 'root:1' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -15,6 +21,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN echo "alias p='python'" >> /etc/profile
 RUN echo "alias n='nvidia-smi'" >> /etc/profile
 RUN echo "alias wn='watch nvidia-smi'" >> /etc/profile
+
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
 

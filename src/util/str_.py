@@ -116,5 +116,8 @@ def to_json(obj, indent = None):
     import ujson
     return ujson.dumps(obj, indent = indent)
 
+def has_visible_chars(s):
+    return len(remove_invisible(s)) > 0
+
 
 

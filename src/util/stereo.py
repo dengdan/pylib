@@ -95,7 +95,10 @@ class CameraModel(JsonObject):
         self.distortion[3][0] = self.p2
         self.size = tuple(self.size)
         self.w, self.h = self.size
-        self.P = np.asarray(self.P)
+        if self.P is not None:
+            self.P = np.asarray(self.P)
+        else:
+            self.P = np.zeros((3, 4))
         self.R = np.asarray(self.R)
         self.set_alpha(self.alpha)
         
@@ -245,8 +248,10 @@ class BinocularModel(JsonObject):
         self.R = np.asarray(self.R)
         self.T = np.asarray(self.T)
         self.B = abs(self.T[0])
-        self.left_camera_model = CameraModel(**self.left_camera_model)
-        self.right_camera_model = CameraModel(**self.right_camera_model)
+        if not isinstance(self.left_camera_model, CameraModel):
+            self.left_camera_model = CameraModel(**self.left_camera_model)
+        if not isinstance(self.right_camera_model, CameraModel):
+            self.right_camera_model = CameraModel(**self.right_camera_model)
         self.set_alpha(0)
         
     def set_alpha(self, a = -1):

@@ -556,6 +556,12 @@ def polyline(img, points, color, closed = False, line_width = 1, thickness = Non
     cv2.polylines(img, [points], closed, color, thickness = line_width)
     return img
 
+def _to_int_tuple(iter):
+    return tuple(int(i) for i in iter)
+
 def line(img, start, end, color, thickness):
-    return cv2.line(img, start, end, color, thickness)
+    return cv2.line(img, _to_int_tuple(start), _to_int_tuple(end), color, thickness)
+
+def close_all_windows():
+    cv2.destroyAllWindows()
     

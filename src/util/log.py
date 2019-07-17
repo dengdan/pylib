@@ -8,7 +8,7 @@ def get_date_str():
     now = datetime.datetime.now()
     return now.strftime('%Y-%m-%d %H:%M:%S')  
 
-def init_logger(log_file = None, log_path = None, log_level = logging.DEBUG, mode = 'w', stdout = True):
+def init_logger(log_file = None, log_path = None, log_level = logging.INFO, mode = 'w', stdout = True):
     """
     log_path: 日志文件的文件夹路径
     mode: 'a', append; 'w', 覆盖原文件写入.
