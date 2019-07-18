@@ -30,6 +30,14 @@ class Box2d(object):
             return self.w * self.h
         return self.to_polygon().area
     
+    def intersection(self, other):
+        poly1 = self.to_polygon()
+        poly2 = other.to_polygon()
+        area1 = poly1.area
+        area2 = poly2.area
+        inter = poly1.intersection(poly2).area
+        return inter
+    
     def iou(self, other, criteria = -1):
         """
         criteria:
