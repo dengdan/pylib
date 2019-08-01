@@ -18,6 +18,10 @@ class Box2d(object):
         return self._corners
     
     @property
+    def edges(self):
+        return [(self.corners[i], self.corners[i + 1]) for i in range(-1, 3)]
+    
+    @property
     def half_width(self):
         return self.w / 2.
     

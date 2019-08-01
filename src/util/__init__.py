@@ -32,6 +32,8 @@ from . import video
 from . import obj
 from . import arg
 from . import coord
+from . import color
+Color = color.Color
 # from . import math
 # log.init_logger('~/temp/log/log_' + get_date_str() + '.log')
 
