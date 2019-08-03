@@ -106,9 +106,9 @@ def ls(path = '.', suffix = None):
     
     return filtered
 
-def find_files(pattern):
+def find_files(pattern, recursive = False):
     import glob
-    return glob.glob(pattern)
+    return glob.glob(pattern, recursive = recursive)
 
 def read_lines(p, encoding = None):
     """return the text in a file in lines as a list """
@@ -206,7 +206,7 @@ def remove(p):
     os.remove(get_absolute_path(p))
 rm = remove
 
-def search(pattern, path, file_only = True):
+def search(pattern, path, file_only = True, recursive = False):
     """
     Search files whose name matches the give pattern. The search scope
     is the directory and sub-directories of 'path'. 
@@ -216,7 +216,7 @@ def search(pattern, path, file_only = True):
     targets = []
     
     # find matchings in current directory
-    candidates = find_files(pattern_here)
+    candidates = find_files(pattern_here, recursive = recursive)
     for can in candidates:
         if util.io.is_dir(can) and file_only:
             continue
@@ -228,7 +228,7 @@ def search(pattern, path, file_only = True):
     for f in files:
         fpath = util.io.join_path(path, f)
         if is_dir(fpath):
-            targets_in_sub_dir = search(pattern, fpath, file_only)
+            targets_in_sub_dir = search(pattern, fpath, file_only, recursive = recursive)
             targets.extend(targets_in_sub_dir)
     return targets
 

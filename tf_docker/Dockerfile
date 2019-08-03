@@ -4,7 +4,7 @@ ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update && apt-get install -y openssh-server
-RUN apt-get install -y tmux htop vim zsh git locales libopencv-dev libboost-all-dev
+RUN apt-get install -y tmux htop vim zsh git locales libopencv-dev libboost-all-dev python-tk
 
 RUN pip install --upgrade pip
 RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple Pillow scikit-learn protobuf scipy matplotlib setproctitle opencv-python  
