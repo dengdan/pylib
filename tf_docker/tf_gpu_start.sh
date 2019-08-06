@@ -32,6 +32,18 @@ function local_volumes() {
   echo "${volumes}"
 }
 
+function add_user() {
+  add_script="addgroup --gid ${GRP_ID} ${GRP} && \
+      adduser --disabled-password --gecos '' ${USER} \
+        --uid ${USER_ID} --gid ${GRP_ID} 2>/dev/null && \
+      usermod -aG sudo ${USER} && \
+      echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
+      cp -r /etc/skel/. /home/${USER} && \
+      chsh -s /usr/bin/zsh ${USER} && \
+      chown -R ${USER}:${GRP} '/home/${USER}'"
+  echo "${add_script}"
+}
+
 function main(){
     docker ps -a --format "{{.Names}}" | grep "${DOCKER_NAME}" 1>/dev/null
     if [ $? == 0 ]; then
@@ -70,11 +82,15 @@ function main(){
         
   
     docker exec ${DOCKER_NAME} service ssh start
+    if [ "${USER}" != "root" ]; then
+        docker exec ${DOCKER_NAME} bash -c "$(add_user)"
+    fi
+
     if [ -z "$(command -v nvidia-smi)" ]; then
         docker exec ${DOCKER_NAME} ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1
     fi
       
-#     docker exec -u root ${DOCKER_NAME} sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    #docker exec -u $USER ${DOCKER_NAME} sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     docker cp -L ~/.gitconfig ${DOCKER_NAME}:${DOCKER_HOME}/.gitconfig
     docker cp -L ~/.vimrc ${DOCKER_NAME}:${DOCKER_HOME}/.vimrc
     docker cp -L ~/.vim ${DOCKER_NAME}:${DOCKER_HOME}
