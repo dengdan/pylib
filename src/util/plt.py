@@ -182,6 +182,7 @@ def show_images(images, titles = None, shape = None, share_axis = False,
     return path
 
 def save_image(path, img = None, dpi = 150):
+    import util
     path = util.io.get_absolute_path(path)
     util.io.make_parent_dir(path)
     if img is None:

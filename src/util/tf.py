@@ -186,6 +186,10 @@ def get_session_config(allow_growth = True, gpu_memory_fraction = None,
                        allow_soft_placement=True):
     config = tf.ConfigProto(allow_soft_placement=allow_soft_placement)
     gpu_config(config, allow_growth, gpu_memory_fraction)
+<<<<<<< Updated upstream
+=======
+    return config
+>>>>>>> Stashed changes
     
 def get_estimator_config(
                model_dir=None,
@@ -275,10 +279,11 @@ def get_update_op():
     """
     Extremely important for BatchNorm
     """
-    update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
-    if update_ops:
-        return tf.group(*update_ops)
-    return None
+    return tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+#     update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+#     if update_ops:
+#         return tf.group(*update_ops)
+#     return None
 
 
 def rand_val(maxval = 1, minval = 0, dtype = None, shape = (1, )):
@@ -299,9 +304,24 @@ def prob_do(probability, fn, args):
     p = prob()
     def do():
         return fn(*args)
+<<<<<<< Updated upstream
     
+=======
+>>>>>>> Stashed changes
     return tf.cond(p < probability, do, do_nothing(*args))
 
 def get_shape_list(tensor):
     return tensor.shape.as_list()
 
+<<<<<<< Updated upstream
+=======
+def FLAGS_as_dict(FLAGS):
+    """
+    https://stackoverflow.com/questions/40286298/how-to-access-all-flags-and-get-their-values-using-loop-in-tensorflow
+    """
+    values = {}
+    for key, value in tf.flags.FLAGS.__flags.items():
+        values[key] = value.value
+    return values
+
+>>>>>>> Stashed changes

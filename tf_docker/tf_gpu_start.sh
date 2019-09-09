@@ -19,6 +19,8 @@ function local_volumes() {
     Linux)
       volumes="${volumes} -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
                           -v /media:/media \
+                          -v $HOME/.ssh:${DOCKER_HOME}/.ssh \
+                          -v /onboard_data:/onboard_data \
                           -v /home/$USER:/home/$USER\
                           -v /etc/localtime:/etc/localtime:ro \
                           -v /private:/private \
@@ -94,6 +96,7 @@ function main(){
     docker cp -L ~/.gitconfig ${DOCKER_NAME}:${DOCKER_HOME}/.gitconfig
     docker cp -L ~/.vimrc ${DOCKER_NAME}:${DOCKER_HOME}/.vimrc
     docker cp -L ~/.vim ${DOCKER_NAME}:${DOCKER_HOME}
+    docker exec -d -u ${USER} ${DOCKER_NAME} pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
  }
 
 main
