@@ -112,11 +112,7 @@ def is_none_or_empty(s):
         return True
     return len(s)==0; 
 
-<<<<<<< Updated upstream
-def to_json(obj, indent = None):
-=======
 def to_json(obj, indent = 4):
->>>>>>> Stashed changes
     import ujson
     return ujson.dumps(obj, indent = indent)
 
