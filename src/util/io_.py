@@ -197,7 +197,11 @@ def read_h5_attrs(h5, key, attrs):
 def copy(src, dest):
     util.io.make_parent_dir(dest)
     import shutil
-    shutil.copy(get_absolute_path(src), get_absolute_path(dest))
+    if is_dir(src):
+        fn = shutil.copytree
+    else:
+        fn = shutil.copy
+    fn(get_absolute_path(src), get_absolute_path(dest))
     
 cp = copy
 
