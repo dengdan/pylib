@@ -1,0 +1,4 @@
+FROM dengdan/tensorflow-gpu
+RUN pip install --upgrade pip
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple torch torchvision
+
