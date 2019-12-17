@@ -45,6 +45,8 @@ def get_latest_ckpt(path):
 
 def get_all_ckpts(path):
     ckpt = tf.train.get_checkpoint_state(path)
+    if not ckpt:
+        return []
     all_ckpts = ckpt.all_model_checkpoint_paths
     ckpts = [str(c) for c in all_ckpts]
     return ckpts
