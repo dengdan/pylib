@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-
+set -x
 SHELL_PATH="$( cd "$( dirname "$0"  )" && pwd  )"
 DOCKER_REPO=dengdan/tensorflow-gpu
 VERSION=tf2.0-cpu #py36 #latest
 ARCH=$(uname -m)
-DOCKER_HOME="/root"
+DOCKER_HOME="/home/$USER"
 DATE=$(date +%F)
 IMG=${DOCKER_REPO}:$VERSION
 
@@ -27,7 +27,9 @@ function local_volumes() {
                           -v /data:/data"
       ;;
     Darwin)
-      chmod -R a+wr ~/.cache/bazel
+#      chmod -R a+wr ~/.cache/bazel
+      volumes="${volumes} -v $HOME/.ssh:${DOCKER_HOME}/.ssh \
+                          -v $HOME:/home/$USER"
       ;;
   esac
 
