@@ -18,6 +18,10 @@ class Box2d(object):
         return self._corners
     
     @property
+    def center(self):
+        return self.cx, self.cy
+    
+    @property
     def edges(self):
         return [(self.corners[i], self.corners[i + 1]) for i in range(-1, 3)]
     

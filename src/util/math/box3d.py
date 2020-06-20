@@ -27,6 +27,10 @@ class Box3d(object):
         return Box2d(self.cx, self.cz, self.l, self.w, self.theta).corners
     
     @property
+    def center(self):
+        return (self.cx, self.cy, self.cz)
+    
+    @property
     def bev_box2d(self):
         return Box2d(self.cx, self.cz, self.l, self.w, self.theta)
     
