@@ -119,5 +119,9 @@ def to_json(obj, indent = 4):
 def has_visible_chars(s):
     return len(remove_invisible(s)) > 0
 
-
+def contain_chn(text):
+    for c in text:
+        if u'\u4e00' <= c <= u'\u9fff':
+            return True
+    return False
 
