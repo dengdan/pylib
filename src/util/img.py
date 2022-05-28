@@ -109,7 +109,9 @@ def white(shape, value = 255):
     return np.ones(shape, np.uint8) * np.uint8(value)
     
 def bgr2rgb(img):
-    return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    if img.shape[-1] == 3:
+        return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    return img
 
 def rgb2bgr(img):
     return cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
