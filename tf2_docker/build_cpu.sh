@@ -1,1 +1,0 @@
-docker build -f Dockerfile_cpu -t dengdan/tensorflow-gpu:tf2.0-cpu .
