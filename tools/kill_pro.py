@@ -1,20 +1,17 @@
 
 def kill(name):
-    from utils.proc_util import pkill, ps_aux_grep
+    from utils.proc_util import pkill, ps_aux_grep, get_pid
     import utils.str_util
     lines = utils.str_util.split(ps_aux_grep(name), '\n')
     excludes = ["kill_pro.py", "grep "]
+    pids = get_pid(name, excludes=excludes)
     for line in lines:
-        show = True
-        for e in excludes:
-            if e in line:
-                show = False
-                break
-        if show:
-            print(line)
+        for pid in pids:
+            if f" {pid} " in line:
+                print(line)
     yes = input('kill them all?[n] y/n.')
     if yes == 'yes' or yes == 'y' or yes == 'Y':
-        pkill(name, excludes = excludes)
+        pkill(pids)
     else:
         try:
             yes = int(yes)
