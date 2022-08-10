@@ -11,7 +11,7 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   parser.add_argument(
     '-f', '--file', nargs='+', required=True, help="image paths")
-  parser.add_argument('-s', '--target-size', type=float, default=150,
+  parser.add_argument('-s', '--target-size', type=float, default=30,
             help="target size")
   parser.add_argument('-u', '--unit', type=str, default='KB', help="size unit")
   args = parser.parse_args()
