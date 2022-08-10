@@ -4,7 +4,7 @@ def kill(name):
     import utils.str_util
     lines = utils.str_util.split(ps_aux_grep(name), '\n')
     for line in lines:
-        if "kill_pro.py" not in line:
+        if "kill_pro.py" not in line and "ps aux|grep " not in line:
             print(line)
     yes = input('kill them all?[n] y/n.')
     if yes == 'yes' or yes == 'y' or yes == 'Y':
