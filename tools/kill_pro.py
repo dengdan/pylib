@@ -3,12 +3,18 @@ def kill(name):
     from utils.proc_util import pkill, ps_aux_grep
     import utils.str_util
     lines = utils.str_util.split(ps_aux_grep(name), '\n')
+    excludes = ["kill_pro.py", "grep "]
     for line in lines:
-        if "kill_pro.py" not in line and "grep " not in line:
+        show = True
+        for e in excludes:
+            if e in line:
+                show = False
+                break
+        if show:
             print(line)
     yes = input('kill them all?[n] y/n.')
     if yes == 'yes' or yes == 'y' or yes == 'Y':
-        pkill(name, excludes = 'kill_pro.py')
+        pkill(name, excludes = excludes)
     else:
         try:
             yes = int(yes)
