@@ -10,7 +10,7 @@ def get_pid(pattern, excludes = None):
         skip = False
         if excludes:
             for e in excludes:
-                if e in info:
+                if e in result:
                     skip = True
                     break
         if skip:

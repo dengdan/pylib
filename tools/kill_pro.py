@@ -5,6 +5,7 @@ def kill(name):
     lines = utils.str_util.split(ps_aux_grep(name), '\n')
     excludes = ["kill_pro.py", "grep "]
     pids = get_pid(name, excludes=excludes)
+    print(pids)
     for line in lines:
         for pid in pids:
             if f" {pid} " in line:
